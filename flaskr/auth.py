@@ -29,21 +29,23 @@ def login_required(view):
     return wrapped_view
 
 
-# # Some error
-# @bp.before_app_request
-# def load_logged_in_user():
-#     """If a user id is stored in the session, load the user object from
-#     the database into ``g.user``."""
-#     user_id = session.get("user_id")
-#     print(user_id)
-#     print(type(user_id))
+# Some error
+@bp.before_app_request
+def load_logged_in_user():
+    """If a user id is stored in the session, load the user object from
+    the database into ``g.user``."""
+    user_id = session.get("user_id")
+    print(user_id)
+    print(type(user_id))
+    db, cur = get_db()
 
-#     if user_id is None:
-#         g.user = None
-#     else:
-#         g.user = (
-#             get_db().execute("SELECT * FROM users WHERE user_id = %s", (user_id,)).fetchone()
-#         )
+    if user_id is None:
+        g.user = None
+    else:
+        cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
+        g.user = (
+            cur.fetchone()
+        )
 
 
 @bp.route("/register", methods=("GET", "POST"))
