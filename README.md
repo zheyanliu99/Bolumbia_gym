@@ -1,5 +1,7 @@
 # Bolumbia_gym
-Application for Bolumbia Gym
+Application for Bolumbia Gym 
+
+Team member: Zheyan Liu, Zhuolun Huang
 
 
 # Install 
