@@ -39,10 +39,12 @@ def create_app(test_config=None):
     from flaskr import auth
     from flaskr import routine
     from flaskr import core
+    from flaskr import error_handler
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(routine.bp)
     app.register_blueprint(core.bp)
+    app.register_blueprint(error_handler.bp)
     
 
     # make url_for('index') == url_for('blog.index')
