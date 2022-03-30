@@ -35,8 +35,6 @@ def load_logged_in_user():
     """If a user id is stored in the session, load the user object from
     the database into ``g.user``."""
     user_id = session.get("user_id")
-    print(user_id)
-    print(type(user_id))
     db, cur = get_db()
 
     if user_id is None:
@@ -80,6 +78,7 @@ def register():
                 error = f"User {username} is already registered."
             else:
                 # Success, go to the login page.
+                flash("Thank you for registration!")
                 return redirect(url_for("auth.login"))
 
         flash(error)
@@ -99,7 +98,7 @@ def login():
             "SELECT * FROM Users WHERE username = %s", (username,)
         )
         user = cur.fetchone()
-        print('***', user["password"], password)
+        # print('***', user["password"], password)
 
         if user is None:
             error = "Incorrect username."
@@ -110,7 +109,7 @@ def login():
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user["user_id"]
-            return redirect(url_for("hello"))
+            return redirect(url_for("core.index"))
 
         flash(error)
 
@@ -121,4 +120,4 @@ def login():
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
-    return redirect(url_for("index"))
+    return redirect(url_for("core.index"))
