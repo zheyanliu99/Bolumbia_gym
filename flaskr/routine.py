@@ -35,6 +35,7 @@ def book():
 
     if form.validate_on_submit():
         flash('Here is all the available routine')
+        form.validate_date(form.date)
         # return redirect(url_for('users.login'))
         db, cur = get_db()
         cur.execute("""
