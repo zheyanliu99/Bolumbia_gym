@@ -86,6 +86,6 @@ def book():
                     # The username was already taken, which caused the
                     # commit to fail. Show a validation error.
                     print(e)
-                    flash("Book failure, you have booked this event appointment ")
+                    flash("Book failure, you have booked this event appointment before")
                 
     return render_template('event/book.html', form=form, headings=headings, res=res)

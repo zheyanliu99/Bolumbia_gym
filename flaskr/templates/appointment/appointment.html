@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+  <h2>{% block title %}Routine Appointment{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-success" role="alert">
+<form method="POST">
+{% if routine_res %}
+<table>
+    <tr>
+        {% for header in routine_res_heading[1:] %}
+        <td><b>{{ header }} </b></td>
+        {% endfor %}
+    </tr>
+    {% for row in routine_res %}
+    <tr>
+        {% for cell in row[1:] %}
+        <td>{{ cell }}</td>
+        {% endfor %}
+        <input id="book_id" name="book_id"
+        type="hidden" value="{{ row[0] }}">
+        <td><button type="submit" name="routinecancel" value="{{ row[0] }}"
+                    formmethod="post">Cancel</button></td>
+
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<p>You do not have routine appointment, make appointments <a href="{{ url_for('routine.book') }}">here</a></p>
+
+{% endif %}
+
+<h2>Event Appointment</h2>
+{% if event_res %}
+<table>
+    <tr>
+        {% for header in event_res_heading[1:] %}
+        <td><b>{{ header }} </b></td>
+        {% endfor %}
+    </tr>
+    {% for row in event_res %}
+    <tr>
+        {% for cell in row[1:] %}
+        <td>{{ cell }}</td>
+        {% endfor %}
+        <input id="book_id" name="book_id"
+        type="hidden" value="{{ row[0] }}">
+        <td><button type="submit" name="eventcancel" value="{{ row[0] }}"
+                    formmethod="post">Cancel</button></td>
+
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+<p>You do not have event appointment, make appointments <a href="{{ url_for('event.book') }}">here</a></p>
+
+{% endif %}
+
+
+</form>
+</div>
+{% endblock %}

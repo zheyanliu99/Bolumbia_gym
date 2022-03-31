@@ -50,7 +50,7 @@ def book():
             AND date = %s
             AND place_name = %s)
 
-            SELECT a.routine_id, date, timeslot, sectionname, num_of_users participaters, capacity 
+            SELECT a.routine_id, date, timeslot, sectionname section, num_of_users participaters, capacity 
             FROM
             (
             SELECT t1.routine_id, count(distinct user_id)  as num_of_users
@@ -60,7 +60,8 @@ def book():
             GROUP BY t1.routine_id) a
             INNER JOIN routine_selected b
             ON a.routine_id = b.routine_id
-            WHERE num_of_users < capacity""", (user_id, date, place_name))
+            WHERE num_of_users < capacity
+            ORDER BY b.date""", (user_id, date, place_name))
         res = cur.fetchall()
         if res:
             headings = heading_from_dict(res)
@@ -80,6 +81,6 @@ def book():
                 # The username was already taken, which caused the
                 # commit to fail. Show a validation error.
                 print(e)
-                flash("Book failure, you have booked this routine appointment ")
+                flash("Book failure, you have booked this routine appointment before")
                 
     return render_template('routine/book.html', form=form, headings=headings, res=res)

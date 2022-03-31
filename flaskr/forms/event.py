@@ -12,7 +12,7 @@ class SearchEventForm(FlaskForm):
     # place_name = SelectField(u'Workout type', choices=[('cardio room', 'cardio'), ('strength training room', 'strength'), ('swimming pool', 'swimming')])
     startdate = DateField('Start Date', format='%Y-%m-%d', validators=(DataRequired(),))
     enddate = DateField('End Date', format='%Y-%m-%d', validators=(DataRequired(),))
-    submit = SubmitField('Search for available event')
+    submit = SubmitField('Search available events')
 
     def validate_date(self, startdate, enddate):
         if startdate.data > enddate.data:
