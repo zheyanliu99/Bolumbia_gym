@@ -1,12 +1,12 @@
 # Bolumbia_gym
-Application for Bolumbia Gym 
+Application for Bolumbia Gym
 
 Team member: Zheyan Liu, Zhuolun Huang
 
 
-# Install 
+# Install
 
-## Mac 
+## Mac
 
 ```
 $ export FLASK_APP=flaskr
@@ -21,3 +21,5 @@ $ flask run
 > set FLASK_ENV=development
 > flask run
 ```
+
+try add something to test the git push
