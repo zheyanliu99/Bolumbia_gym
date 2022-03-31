@@ -66,16 +66,17 @@ def register():
 
         if error is None:
             try:
+                # Nickname inserted the same as username
                 cur.execute(
-                    "INSERT INTO users (username, password) VALUES (%s, %s)",
-                    (username, generate_password_hash(password)),
+                    "INSERT INTO users (username, nickname, password) VALUES (%s, %s, %s)",
+                    (username, username, generate_password_hash(password)),
                 )
                 db.commit()
             except Exception as e:
                 # The username was already taken, which caused the
                 # commit to fail. Show a validation error.
                 print(e)
-                error = f"User {username} is already registered."
+                error = f"Username {username} is already registered, try again!"
             else:
                 # Success, go to the login page.
                 flash("Thank you for registration!")
