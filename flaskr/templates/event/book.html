@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Book Event{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    {{ form.startdate.label }} {{ form.startdate}}<br>
+    {{ form.enddate.label }} {{ form.enddate}}<br>
+    {{ form.submit() }}
+
+
+    {% if res %}
+    <table>
+        <tr>
+            {% for header in headings[1:] %}
+            <td><b>{{ header }} </b></td>
+            {% endfor %}
+        </tr>
+        {% for row in res %}
+        <tr>
+            {% for cell in row[1:] %}
+            <td>{{ cell }}</td>
+            {% endfor %}
+            <input id="book_id" name="book_id"
+            type="hidden" value="{{ row[0] }}">
+            <td><button type="submit" name="bookbutton" value="{{ row[0] }}"
+                        formmethod="post">Book</button></td>
+            <input id="more" name="more"
+            type="hidden" value="{{ row[0] }}">
+            <td><button type="submit" name="more" value="{{ row[0] }}"
+                        formmethod="post">Learn more</button></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+
+</form>
+
+{% endblock %}

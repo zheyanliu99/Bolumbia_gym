@@ -50,7 +50,7 @@ def book():
             AND date = %s
             AND place_name = %s)
 
-            SELECT a.routine_id, date, timeslot, sectionname, num_of_users, capacity 
+            SELECT a.routine_id, date, timeslot, sectionname, num_of_users participaters, capacity 
             FROM
             (
             SELECT t1.routine_id, count(distinct user_id)  as num_of_users

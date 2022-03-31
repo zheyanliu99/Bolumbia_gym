@@ -9,9 +9,9 @@ import datetime
 
 
 class RoutineForm(FlaskForm):
-    place_name = SelectField(u'Workout type', choices=[('cardio room', 'cardio'), ('strength training room', 'strength'), ('swimming pool', 'swimming')])
-    date = DateField('Date', format='%Y-%m-%d')
-    submit = SubmitField('Search for availability')
+    place_name = SelectField(u'Workout type', choices=[('cardio room', 'cardio'), ('strength training room', 'strength'), ('swimming pool', 'swimming')], validators=(DataRequired(),))
+    date = DateField('Date', format='%Y-%m-%d', validators=(DataRequired(),))
+    submit = SubmitField('Search available routine')
 
     def validate_date(self, field):
         if field.data < datetime.date.today():
