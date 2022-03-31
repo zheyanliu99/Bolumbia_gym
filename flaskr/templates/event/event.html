@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Event Infomation{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<ul class="list-group list-group-flush">
+    {% for event, event_heading in events_res %}
+    <li class="list-group-item">{{ event_heading }} : {{ event }}</li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}
