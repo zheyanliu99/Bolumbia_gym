@@ -34,7 +34,6 @@ def book():
     # print(place_name, date, type(date))
 
     if form.validate_on_submit():
-        flash('Here is all the available routine')
         form.validate_date(form.date)
         # return redirect(url_for('users.login'))
         db, cur = get_db()
@@ -63,24 +62,23 @@ def book():
             WHERE num_of_users < capacity
             ORDER BY b.date""", (user_id, date, place_name))
         res = cur.fetchall()
-        if res:
+        if not res:
+            flash('No available routine, try another date')
+        else:
             headings = heading_from_dict(res)
     
-    # if request.form.get("book"):
-    #     print('Book ID: ', request.form.get('book'))
-        if request.form.get("bookbutton"):
-            routine_id = request.form.get('bookbutton')
-            print(routine_id, user_id)
-            try:
-                cur.execute(
-                    "INSERT INTO routine_appointment (user_id, routine_id) VALUES (%s, %s)",
-                    (user_id, routine_id),
-                )
-                db.commit()
-            except Exception as e:
-                # The username was already taken, which caused the
-                # commit to fail. Show a validation error.
-                print(e)
-                flash("Book failure, you have booked this routine appointment before")
+            if request.form.get("bookbutton"):
+                routine_id = request.form.get('bookbutton')
+                print(routine_id, user_id)
+                try:
+                    cur.execute(
+                        "INSERT INTO routine_appointment (user_id, routine_id) VALUES (%s, %s)",
+                        (user_id, routine_id),
+                    )
+                    db.commit()
+                except Exception as e:
+                    print(e)
+                    # This could happen if user clicks too quick...should find a way to solve that
+                    flash("Book failure, you have booked this routine appointment before")
                 
     return render_template('routine/book.html', form=form, headings=headings, res=res)
