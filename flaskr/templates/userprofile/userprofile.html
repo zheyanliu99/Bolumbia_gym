@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %} 
+    {% if if_current_user %}
+        My 
+    {% else %}
+        {{user_info['username']}}'s
+    {% endif %} Profile
+    {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<ul class="list-group list-group-flush">
+    <li class="list-group-item">nickname : {{ user_info['nickname'] }}</li>
+    <li class="list-group-item">email : {{ user_info['email'] }}</li>
+    <li class="list-group-item">sex : {{ user_info['sex'] }}</li>
+    <li class="list-group-item">age : {{ user_info['age'] }}</li>
+  </ul>
+
+
+      {% if coaching_info %}
+        <h2>Coaching</h2>   
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">description : {{ coaching_info['description'] }}</li>
+            <li class="list-group-item">experience years : {{ coaching_info['experienceyears'] }}</li>
+            <li class="list-group-item">start date : {{ coaching_info['startdate'] }}</li>
+            <li class="list-group-item"># of events held : {{ coaching_info_more['events'] }}</li>
+            <li class="list-group-item">total participators : {{ coaching_info_more['participators'] }}</li>
+        </ul>
+
+      {% endif %}
+
+  <h2>Recent Post</h2>
+
+
+{% endblock %}

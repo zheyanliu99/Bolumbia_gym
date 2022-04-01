@@ -10,6 +10,7 @@
       <li><a href="{{ url_for('appointment.manage') }}">Appointment</a>
 
       <li><span>{{ g.user['username'] }}</span>
+      <li><a href="{{ url_for('userprofile.show', user_id=session['user_id']) }}">User</a>
       <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
     {% else %}
       <li><a href="{{ url_for('auth.register') }}">Register</a>
