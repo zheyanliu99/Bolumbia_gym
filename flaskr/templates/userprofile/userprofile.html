@@ -17,6 +17,16 @@
     <li class="list-group-item">email : {{ user_info['email'] }}</li>
     <li class="list-group-item">sex : {{ user_info['sex'] }}</li>
     <li class="list-group-item">age : {{ user_info['age'] }}</li>
+    <li class="list-group-item">followers : {{ followers['followers'] }}
+    <input id="followers_detail" name="followers_detail"
+    type="hidden" value="{{ followers['followers'] }}">
+    <td><button type="submit" name="followers_detail" value="{{ user_id }}"
+                formmethod="post">Details</button></td></li>
+    <li class="list-group-item">following : {{ following['following'] }}
+    <input id="following_detail" name="following_detail"
+    type="hidden" value="{{ user_id }}">
+    <td><button type="submit" name="following_detail" value="{{ user_id }}"
+                  formmethod="post">Details</button></td></li>
   </ul>
 
 

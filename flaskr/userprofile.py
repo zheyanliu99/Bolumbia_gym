@@ -33,6 +33,12 @@ def show(user_id):
     cur.execute("SELECT username, nickname, email, sex, age FROM users WHERE user_id = %s", (user_id, ))
     user_info = cur.fetchone()
 
+    cur.execute("SELECT count(*) as followers FROM follow_record WHERE user_id = %s", (user_id, ))
+    followers = cur.fetchone()
+
+    cur.execute("SELECT count(*) as following FROM follow_record WHERE follower_id = %s", (user_id, ))
+    following = cur.fetchone()
+
     # Get coach info
     cur.execute("SELECT * FROM coach WHERE user_id = %s", (user_id, ))
     coaching_info = cur.fetchone()
@@ -56,4 +62,5 @@ def show(user_id):
         cur.execute(sql, (coaching_info['coach_id'], datetime.date.today()))
         coaching_info_more = cur.fetchone()
    
-    return render_template('userprofile/userprofile.html', user_id=user_id, if_current_user=if_current_user, user_info=user_info, coaching_info=coaching_info, coaching_info_more=coaching_info_more)
+    return render_template('userprofile/userprofile.html', user_id=user_id, if_current_user=if_current_user, 
+        user_info=user_info, followers=followers, following=following, coaching_info=coaching_info, coaching_info_more=coaching_info_more)
