@@ -34,7 +34,13 @@ def show(user_id):
     current_user_id = session["user_id"]
     if_current_user = current_user_id == user_id
     coaching_info_more = None
+    if_follow = None 
+
     db, cur = get_db() 
+    # If follow
+    cur.execute("SELECT * FROM follow_record WHERE user_id = %s AND follower_id = %s", (user_id, current_user_id))
+    if_follow = cur.fetchone()
+
     # Get user info
     cur.execute("SELECT username, nickname, email, sex, age FROM users WHERE user_id = %s", (user_id, ))
     user_info = cur.fetchone()
@@ -67,12 +73,33 @@ def show(user_id):
                     
         cur.execute(sql, (coaching_info['coach_id'], datetime.date.today()))
         coaching_info_more = cur.fetchone()
-    
-    # if request.form.get("followers_detail"):
-    #     # user_id_more = request.form.get('followers_detail')
-    #     return redirect(url_for('userprofile.followers', user_id=user_id))
-   
-    return render_template('userprofile/userprofile.html', user_id=user_id, if_current_user=if_current_user, 
+
+
+    # Follow/Unfollow button
+
+    if request.method == 'POST':
+        if request.form['follow_button'] == 'Follow':
+            try:
+                cur.execute("INSERT INTO follow_record  VALUES (%s, %s, %s)",(user_id, current_user_id, datetime.datetime.now().strftime('%m-%d-%Y %H:%M:%S')))
+                db.commit()
+            except Exception as e:
+                # The username was already taken, which caused the
+                # commit to fail. Show a validation error.
+                print(e)
+                flash("Follow failure, you have followed this user")
+
+        elif request.form['follow_button'] == 'Unfollow':
+            try:
+                cur.execute("DELETE FROM follow_record WHERE user_id = %s AND follower_id = %s",(user_id, current_user_id))
+                db.commit()
+            except Exception as e:
+                # The username was already taken, which caused the
+                # commit to fail. Show a validation error.
+                print(e)
+                flash("Unfollow failure, you do not follow this user")
+
+        return redirect(url_for('userprofile.show', user_id=user_id))
+    return render_template('userprofile/userprofile.html', user_id=user_id, current_user_id=current_user_id, if_current_user=if_current_user, if_follow=if_follow,
         user_info=user_info, followers=followers, following=following, coaching_info=coaching_info, coaching_info_more=coaching_info_more)
 
 

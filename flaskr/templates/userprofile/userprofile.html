@@ -1,16 +1,32 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %} 
+<!-- <h1>User profile</h1> -->
+{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+  <h2>{% block title %} 
     {% if if_current_user %}
         My 
     {% else %}
         {{user_info['username']}}'s
     {% endif %} Profile
-    {% endblock %}</h1>
-{% endblock %}
+    {% endblock %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    {% if if_current_user %}
+    &nbsp; 
+      {% else %}
+        {% if if_follow %}
+          <input type="submit" name="follow_button" value="Unfollow">
+        {% else %}
+          <input type="submit" name="follow_button" value="Follow">
 
-{% block content %}
+        {% endif %}
+    {% endif %}
+
+  </h2>
+</form>
 
 <ul class="list-group list-group-flush">
     <li class="list-group-item">nickname : {{ user_info['nickname'] }}</li>
@@ -43,6 +59,7 @@
       {% endif %}
 
   <h2>Recent Post</h2>
+
 
 
 {% endblock %}

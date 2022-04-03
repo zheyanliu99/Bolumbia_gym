@@ -77,7 +77,7 @@ def book():
 
                 if request.form.get("bookbutton"):
                     event_id = request.form.get('bookbutton')
-                    print(event_id, user_id)
+                    # print(event_id, user_id)
                     try:
                         cur.execute(
                             "INSERT INTO event_appointment (user_id, event_id) VALUES (%s, %s)",
