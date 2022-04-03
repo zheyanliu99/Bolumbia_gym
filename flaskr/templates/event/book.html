@@ -30,10 +30,8 @@
             type="hidden" value="{{ row[0] }}">
             <td><button type="submit" name="bookbutton" value="{{ row[0] }}"
                         formmethod="post">Book</button></td>
-            <input id="more" name="more"
-            type="hidden" value="{{ row[0] }}">
-            <td><button type="submit" name="more" value="{{ row[0] }}"
-                        formmethod="post">Learn more</button></td>
+            <td><a href={{ url_for('event.event_info', event_id=row[0]) }}>Details</a>
+                        </td>
         </tr>
         {% endfor %}
     </table>

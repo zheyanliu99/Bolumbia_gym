@@ -89,10 +89,6 @@ def book():
                         # commit to fail. Show a validation error.
                         print(e)
                         flash("Book failure, you have booked this event appointment before")
-
-                if request.form.get("more"):
-                    event_id = request.form.get('more')
-                    return redirect(url_for('event.event_info', event_id=event_id))
                 
     return render_template('event/book.html', form=form, headings=headings, res=res)
 
