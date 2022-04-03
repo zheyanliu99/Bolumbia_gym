@@ -67,6 +67,10 @@ def show(user_id):
                     
         cur.execute(sql, (coaching_info['coach_id'], datetime.date.today()))
         coaching_info_more = cur.fetchone()
+    
+    # if request.form.get("followers_detail"):
+    #     # user_id_more = request.form.get('followers_detail')
+    #     return redirect(url_for('userprofile.followers', user_id=user_id))
    
     return render_template('userprofile/userprofile.html', user_id=user_id, if_current_user=if_current_user, 
         user_info=user_info, followers=followers, following=following, coaching_info=coaching_info, coaching_info_more=coaching_info_more)
@@ -78,7 +82,7 @@ def followers(user_id):
         abort(404)
     db, cur = get_db() 
     sql = """
-        SELECT b.user_id, b.username, a.datetime follow_time
+        SELECT b.user_id, b.username, nickname, email, a.datetime follow_time
         FROM
         (
         SELECT * 
@@ -87,16 +91,34 @@ def followers(user_id):
         INNER JOIN users b
         ON a.follower_id = b.user_id
         ORDER BY datetime DESC"""
-
-            
+           
     cur.execute(sql, (user_id,))
     followers = cur.fetchall()
     followers_headings = heading_from_dict(followers)
 
-    if request.form.get("more"):
-        user_id_more = request.form.get('more')
-        return redirect(url_for('userprofile.show', user_id=user_id_more))
     
     return render_template('userprofile/follower.html', followers=followers, followers_headings=followers_headings)
+
+@bp.route('/<int:user_id>/following', methods=['GET', 'POST'])
+def following(user_id):
+    if user_id != session["user_id"]:
+        abort(404)
+    db, cur = get_db() 
+    sql = """
+        SELECT b.user_id, b.username, nickname, email, a.datetime follow_time
+        FROM
+        (
+        SELECT * 
+        FROM follow_record 
+        WHERE follower_id=%s) a
+        INNER JOIN users b
+        ON a.user_id = b.user_id
+        ORDER BY datetime DESC"""
+           
+    cur.execute(sql, (user_id,))
+    followers = cur.fetchall()
+    followers_headings = heading_from_dict(followers)
+
     
+    return render_template('userprofile/following.html', followers=followers, followers_headings=followers_headings)
 

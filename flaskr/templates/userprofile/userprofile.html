@@ -17,20 +17,16 @@
     <li class="list-group-item">email : {{ user_info['email'] }}</li>
     <li class="list-group-item">sex : {{ user_info['sex'] }}</li>
     <li class="list-group-item">age : {{ user_info['age'] }}</li>
-    <li class="list-group-item">followers : {{ followers['followers'] }}
+    <li class="list-group-item">followers : {{ followers['followers'] }} 
     {% if if_current_user %}
-    <input id="followers_detail" name="followers_detail"
-    type="hidden" value="{{ followers['followers'] }}">
-    <td><button type="submit" name="followers_detail" value="{{ user_id }}"
-                formmethod="post">Details</button></td></li>
+      <a href={{ url_for('userprofile.followers', user_id=user_id) }}>Details</a>
     {% endif %}
-    <li class="list-group-item">following : {{ following['following'] }}
+    </li>
+    <li class="list-group-item">following : {{ following['following'] }} 
     {% if if_current_user %}
-    <input id="following_detail" name="following_detail"
-    type="hidden" value="{{ user_id }}">
-    <td><button type="submit" name="following_detail" value="{{ user_id }}"
-                  formmethod="post">Details</button></td></li>
+      <a href={{ url_for('userprofile.following', user_id=user_id) }}>Details</a>
     {% endif %}
+    </li>
   </ul>
 
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>My followers</h1>
+  <h1>Who I follow</h1>
 {% endblock %}
 
 {% block content %}
@@ -18,6 +18,8 @@
         {% for cell in row[1:] %}
         <td>{{ cell }}</td>
         {% endfor %}
+        <input id="more" name="more"
+        type="hidden" value="{{ row[0] }}">
         <td><a href={{ url_for('userprofile.show', user_id=row[0]) }}>Details</a>
         </td>
     </tr>
