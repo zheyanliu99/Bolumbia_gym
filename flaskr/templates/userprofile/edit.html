@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>Edit my profile</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="POST">
+    {# This hidden_tag is a CSRF security feature. #}
+    <h3>User Infomation</h3>
+    {{ form.hidden_tag() }}
+    {{ form.nickname.label }} {{ form.nickname }}<br>
+    {{ form.email.label }} {{ form.email }}<br>
+    {{ form.age.label }} {{ form.age }}<br>
+    {{ form.sex.label }} {{ form.sex }}<br>
+    {% if coach_info %}
+    <h3>Coach Infomation</h3>
+      {{ form.description.label }} {{ form.description }}<br>
+    {% endif %}
+    {{ form.submit() }}
+
+
+
+  </form>
+{% endblock %}

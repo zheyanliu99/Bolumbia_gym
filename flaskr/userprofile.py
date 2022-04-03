@@ -12,7 +12,7 @@ from flask import url_for
 from flask import abort
 
 from flaskr.db import get_db
-
+from .forms.userprofile import UserProfileForm
 
 bp = Blueprint("userprofile", __name__, url_prefix="/userprofile")
 
@@ -149,3 +149,54 @@ def following(user_id):
     
     return render_template('userprofile/following.html', followers=followers, followers_headings=followers_headings)
 
+@bp.route('/<int:user_id>/edit', methods=['GET', 'POST'])
+def edit(user_id):
+    # A user cannot edit others profile
+    if user_id != session["user_id"]:
+        abort(404)
+    db, cur = get_db() 
+    cur.execute("SELECT * FROM USERS WHERE user_id=%s", (user_id,))
+    user_info = cur.fetchone()
+    # Set default values for forms
+    form = UserProfileForm(
+        nickname = user_info['nickname'],
+        email = user_info['email'],
+        age = user_info['age'],
+        sex = user_info['sex'])
+
+    cur.execute("SELECT * FROM coach WHERE user_id=%s", (user_id,))
+    coach_info = cur.fetchone()
+
+    if coach_info:
+        form.description.default = coach_info['description']
+
+    
+    if form.validate_on_submit():
+        nickname = form.nickname.data
+        email = form.email.data
+        age = form.age.data
+        sex = form.sex.data
+        # update sql
+        sql = """
+            UPDATE users
+            SET nickname = %s, email = %s, age = %s, sex = %s
+            WHERE user_id = %s    
+        """
+        cur.execute(sql, (nickname, email, age, sex, user_id))
+        db.commit()
+        # update if coach 
+        if coach_info:
+            print('working on coach')
+            description = form.description.data
+            sql = """
+                UPDATE coach
+                SET description = %s
+                WHERE user_id = %s    
+            """
+            cur.execute(sql, (description, user_id))            
+            db.commit()
+        
+        flash("Profile updated")
+        return redirect(url_for('userprofile.show', user_id=user_id))
+
+    return render_template('userprofile/edit.html', form=form, coach_info=coach_info)
