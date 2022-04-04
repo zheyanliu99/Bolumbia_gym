@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}
+        My Post
+    {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<ul>
+  <textarea name="name" rows="8" cols="80"></textarea>
+  <input type="submit" name="" value="Submitpost">
+</ul>
+
+<form method="POST">
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    {{ form.submit() }}
+</form>
+
+
+{% endblock %}
