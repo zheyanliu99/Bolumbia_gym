@@ -44,6 +44,7 @@ def create_app(test_config=None):
     from flaskr import error_handler
     from flaskr import appointment
     from flaskr import userprofile
+    from flaskr import post
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(routine.bp)
@@ -52,6 +53,7 @@ def create_app(test_config=None):
     app.register_blueprint(event.bp)
     app.register_blueprint(appointment.bp)
     app.register_blueprint(userprofile.bp)
+    app.register_blueprint(post.bp)
 
     # make url_for('index') == url_for('blog.index')
     # in another app, you might define a separate main index here with
