@@ -5,6 +5,18 @@
 {% endblock %}
 
 {% block content %}
+<form method="POST">
+  {# This hidden_tag is a CSRF security feature. #}
+  <h3>Choose available time</h3>
+  {{ timeform.hidden_tag() }}
+  {{ timeform.date.label }} {{ timeform.date }}<br>
+  {{ timeform.starttime.label }} {{ timeform.starttime }}<br>
+  {{ timeform.endtime.label }} {{ timeform.endtime }}<br>
+  {{ timeform.duration.label }} {{ timeform.duration }}<br>
+  {{ timeform.submit() }}
 
+
+
+</form>
 
 {% endblock %}

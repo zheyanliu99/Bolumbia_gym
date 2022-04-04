@@ -1,3 +1,4 @@
+import datetime
 import functools
 
 from flask import Blueprint
@@ -9,10 +10,13 @@ from flask import request
 from flask import session
 from flask import url_for
 from marshmallow import ValidationError
+import sys
+import logging 
+logging.basicConfig(level=logging.DEBUG)
 
 from flaskr.db import get_db
 
-from .forms.event import SearchEventForm
+from .forms.event import SearchEventForm, CreateEventForm, SearchTimeForm
 
 bp = Blueprint("event", __name__, url_prefix="/event")
 
@@ -127,6 +131,17 @@ def event_info(event_id):
     events_res = [(event, event_heading) for (event, event_heading) in zip(events, event_headings)]
     return render_template('event/event.html', events_res=events_res)
 
-@bp.route('/create')
+@bp.route('/create', methods=['GET', 'POST'])
 def create():
-    pass
+    timeform = SearchTimeForm()
+    # timeform.date.default = datetime.date.today() + datetime.timedelta(days=3)
+
+    if timeform.validate_on_submit():
+        flash(timeform.date.data)
+        starttime = timeform.starttime.data
+        print(starttime, type(starttime))
+        print('Hi', flush=True)
+    else:
+        print(timeform.errors)
+    
+    return render_template('event/create.html', timeform=timeform)
