@@ -12,7 +12,7 @@ from flask import url_for
 from flask import abort
 
 from flaskr.db import get_db
-from .forms.userprofile import UserProfileForm
+from .forms.userprofile import UserProfileForm, BecomeCoachForm
 
 bp = Blueprint("userprofile", __name__, url_prefix="/userprofile")
 
@@ -200,3 +200,25 @@ def edit(user_id):
         return redirect(url_for('userprofile.show', user_id=user_id))
 
     return render_template('userprofile/edit.html', form=form, coach_info=coach_info)
+
+
+
+@bp.route('/<int:user_id>/becomecoach', methods=['GET', 'POST'])
+def becomecoach(user_id):
+    # A user cannot make others become coach
+    if user_id != session["user_id"]:
+        abort(404)
+
+    if_coach = None
+    db, cur = get_db()
+    cur.execute("SELECT 1 FROM coach WHERE user_id=%s", (user_id,))
+    if_coach = cur.fetchone()
+    form = BecomeCoachForm()
+    if form.validate_on_submit():
+        experienceyears = form.experienceyears.data
+        description = form.description.data
+        sql = "INSERT INTO coach (user_id, description, experienceyears, startdate) VALUES (%s, %s, %s, %s)"
+        cur.execute(sql, (user_id, description, experienceyears, datetime.date.today()))      
+        db.commit()
+        return redirect(url_for('userprofile.show', user_id=user_id))
+    return render_template('userprofile/becomecoach.html', form=form, if_coach=if_coach)

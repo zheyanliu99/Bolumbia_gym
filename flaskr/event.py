@@ -126,3 +126,7 @@ def event_info(event_id):
     event_headings = [key for key in events.keys()]
     events_res = [(event, event_heading) for (event, event_heading) in zip(events, event_headings)]
     return render_template('event/event.html', events_res=events_res)
+
+@bp.route('/create')
+def create():
+    pass

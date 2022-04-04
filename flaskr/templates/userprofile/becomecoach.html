@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>Become a coach</h2>
+{% endblock %}
+
+{% block content %}
+  <form method="POST">
+    {# This hidden_tag is a CSRF security feature. #}
+
+    {% if not if_coach %}
+      {{ form.hidden_tag() }}
+      {{ form.experienceyears.label }} {{ form.experienceyears }}<br>
+      {{ form.description.label }} {{ form.description }}<br>
+      {{ form.submit() }}
+    {% else %}
+        <p>You are already a coach</p>
+    {% endif %}
+
+  </form>
+{% endblock %}

@@ -13,9 +13,9 @@
     {% else %}
         {{user_info['username']}}'s
     {% endif %} Profile
-    {% endblock %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    {% endblock %}&nbsp;&nbsp;&nbsp;&nbsp;
     {% if if_current_user %}
-    &nbsp; 
+    <a href="{{ url_for('userprofile.edit', user_id=user_id) }}" class="btn btn-primary active" role="button" aria-pressed="true">Edit</a>
       {% else %}
         {% if if_follow %}
           <input type="submit" name="follow_button" value="Unfollow">
