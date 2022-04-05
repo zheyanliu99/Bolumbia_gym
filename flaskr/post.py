@@ -12,6 +12,7 @@ from flask import url_for
 
 from flaskr.db import get_db
 
+from .forms.post import Postform
 
 bp = Blueprint("post", __name__, url_prefix="/post")
 
@@ -38,7 +39,7 @@ def post():
             INNER JOIN
             SELECT post_id
             FROM users_post AS U
-            on p.user.id = U.user_id""", (user_id, post_id, content))
+            on p.user.id = U.user_id""")
         res = cur.fetchall()
         if not res:
             flash("No available event, try another date")
