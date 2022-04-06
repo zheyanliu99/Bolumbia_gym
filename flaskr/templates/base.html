@@ -45,7 +45,9 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{{ url_for('userprofile.show', user_id=session['user_id']) }}">My Profile</a>
-          <a class="dropdown-item" href="#">My Post</a>
+          <a class="dropdown-item" href="{{ url_for('post.createpost', user_id=session['user_id']) }}">CreatePost</a>
+          <a class="dropdown-item" href="{{ url_for('post.index') }}">Post</a>
+
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ url_for('userprofile.becomecoach', user_id=session['user_id']) }}">Become a coach</a>
         </div>
