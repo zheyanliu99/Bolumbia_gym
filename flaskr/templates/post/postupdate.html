@@ -6,14 +6,14 @@
 
 {% block content %}
   <form method="post">
-    <label for="title">Title</label>
+    <label for="title">title</label>
     <input name="title" id="title" value="{{ request.form['title'] or post['title'] }}" required>
-    <label for="body">Body</label>
-    <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
+    <label for="body">post</label>
+    <textarea name="body" id="body">{{ request.form['body'] or post['post'] }}</textarea>
     <input type="submit" value="Save">
   </form>
   <hr>
-  <form action="{{ url_for('blog.delete', id=post['id']) }}" method="post">
+  <form action="{{ url_for('post.delete', post_id = post['post_id']) }}" method="post">
     <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
   </form>
 {% endblock %}

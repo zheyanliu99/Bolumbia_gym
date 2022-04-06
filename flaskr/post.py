@@ -9,6 +9,7 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from flask import abort
 
 from flaskr.db import get_db
 
@@ -32,21 +33,28 @@ def index():
     print(title, post)
     db, cur = get_db()
     cur.execute("""
-               SELECT p.post_id, p.title, p.content, p.author_id, p.open_to
+               SELECT p.post_id, p.title, p.content, p.user_id, p.open_to
                FROM post p JOIN users u
-               ON u.user_id = p.author_id""")
+               ON u.user_id = p.user_id""")
     posts = cur.fetchall()
     return render_template("post/postindex.html", posts=posts)
 
 
 #
 def get_post(user_id, check_author=True):
+    if user_id != session["user_id"]:
+        abort(404)
     db, cur = get_db()
-    cur.execute("""
-                SELECT p.post_id, title, content, user_id FROM post AS p
-                JOIN users_post AS u
-                ON p.post_id = u.post_id
-                WHERE post_id = %s""", (user_id, post_id))
+    sql = """
+        SELECT p.post_id, p.user_id
+        from
+        (
+        SELECT *
+        FROM users
+        WHERE user_id=%s) a
+        INNER JOIN post p
+        on a.user_id = p.user_id"""
+    cur.execute(sql, (user_id,))
     post = cur.fetchone()
 
     if post is None:
@@ -58,35 +66,6 @@ def get_post(user_id, check_author=True):
     return post
 
 
-# CREATE POST
-#@bp.route('/createpost', methods=['GET', 'POST'])
-#def createpost():
-#    form = Postform()
-#    res = None
-#    headings = None
-#    user_id = session["user_id"]
-#    post = form.post.data
-#    title = form.title.data
-
-#    if form.validate_on_submit():
-#        db, cur = get_db()
-#        headings = heading_from_dict(res)
-#        if request.form.get("bookbutton"):
-#            post_id = request.form.get('bookbutton')
-#            try:
-#                cur.execute(
-#                    "INSERT INTO users_post (user_id, post_id) VALUES (%s, %s)",
-#                    (user_id, post_id),
-#                )
-#                db.commit()
-#                return redirect(url_for(postview))
-#            except Exception as e:
-#                # The username was already taken, which caused the
-#                # commit to fail. Show a validation error.
-#                print(e)
-#                flash("post failure")
-#    return render_template('post/postcreate.html', form=form, headings = headings,
-#                            user_id = user_id, title = title)
 # create post
 @bp.route("/createpost", methods=("GET", "POST"))
 def createpost():
@@ -95,26 +74,27 @@ def createpost():
     user_id = session["user_id"]
 
     if form.validate_on_submit():
-        flash(form.post.data)
+        # flash(form.post.data)
         post = form.post.data
         title = form.title.data
-        error = None
+        # error = None
 
-        if not title:
-            error = "Title is required."
+        # if not title:
+        #     error = "Title is required."
+        #
+        # if error is not None:
+        #     flash(error)
+        # else:
+        print('aaaa')
+        db, cur = get_db()
+        cur.execute(
+            "INSERT INTO post (title, content, user_id) VALUES (%s, %s, %s)",
+            (title, post, user_id),
+        )
+        db.commit()
+        return redirect(url_for("post.index"))
 
-        if error is not None:
-            flash(error)
-        else:
-            db, cur = get_db()
-            cur.execute(
-                "INSERT INTO post (title, content, author_id) VALUES (%s, %s, %s)",
-                (title, content, user_id),
-            )
-            db.commit()
-            return redirect(url_for("post.index"))
-
-    return render_template("post/postcreate.html")
+    return render_template("post/postcreate.html", form = form, user_id = user_id)
 
 
 #post View
@@ -127,7 +107,7 @@ def postview(user_id):
     sql = """
         WITH post_selected as (
         SELECT post_id, user_id
-        FROM users_post
+        FROM post
         WHERE user_id = %s)
 
         SELECT p.post_id, p.content, p.title, p,datetime, p.open_to
@@ -135,7 +115,7 @@ def postview(user_id):
         (
         SELECT *
         FROM post_selected p1
-        JOUN post p
+        JOIN post p
         ON p.post_id = p1.post_id"""
 
     cur.execute(sql, (post_id, user_id, content, title))
@@ -176,8 +156,8 @@ def update(user_id):
     post = get_post(user_id)
 
     if request.method == "POST":
-        title = request.form["title"]
-        post = request.form["post"]
+        post = form.post.data
+        title = form.title.data
         error = None
 
         if not title:
@@ -187,13 +167,17 @@ def update(user_id):
             flash(error)
         else:
             db, cur = get_db()
-            cur.execute(
-                "UPDATE post SET title = %s, body = %s WHERE user_id = %s", (title, content, user_id)
-            )
+            sql = """
+                UPDATE post
+                SET title = %s, content = %s
+                WHERE user_id = %s
+            """
+            cur.execute(sql, (title, post))
             db.commit()
+            flash("updated")
             return redirect(url_for("post.index"))
 
-    return render_template("post/update.html", post=post)
+    return render_template("post/postupdate.html", post=post)
 
 
 # delete
@@ -203,8 +187,12 @@ def delete(post_id):
     Ensures that the post exists and that the logged in user is the
     author of the post.
     """
-    get_post(id)
-    db = get_db()
-    db.execute("DELETE FROM post WHERE id = ?", (id,))
+
+    get_post(post_id)
+    db, cur= get_db()
+    sql = """
+        DELETE FROM post WHERE post_id = %s
+    """
+    cur.execute(sql, (post_id))
     db.commit()
-    return redirect(url_for("blog.index"))
+    return redirect(url_for("post.index"))

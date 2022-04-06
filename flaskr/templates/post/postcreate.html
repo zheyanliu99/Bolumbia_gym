@@ -6,10 +6,12 @@
 
 {% block content %}
   <form method="post">
-    <label for="title">Title</label>
-    <input name="title" id="title" value="{{ request.form['title'] }}" required>
-    <label for="body">Content</label>
-    <textarea name="body" id="body">{{ request.form['post'] }}</textarea>
-    <input type="submit" value="Save">
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    {{ form.title.label }} {{ form.title}}<br>
+    {{ form.post.label }} {{ form.post}}<br>
+    {{ form.open_to.label }} {{ form.open_to}}<br>
+    {{ form.date.label }} {{ form.date}}<br>
+    {{ form.submit() }}
   </form>
 {% endblock %}
