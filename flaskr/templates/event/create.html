@@ -5,10 +5,13 @@
 {% endblock %}
 
 {% block content %}
+{% if coach_info %}
+
 <form method="POST">
   {# This hidden_tag is a CSRF security feature. #}
   <h3>Choose available time</h3>
   {{ timeform.hidden_tag() }}
+  {{ timeform.place.label }} {{ timeform.place }}<br>
   {{ timeform.date.label }} {{ timeform.date }}<br>
   {{ timeform.starttime.label }} {{ timeform.starttime }}<br>
   {{ timeform.endtime.label }} {{ timeform.endtime }}<br>
@@ -17,6 +20,53 @@
 
 
 
+
+{% if step==1 %}
+  {% if available_times %}
+    <p><b><i>Here is all available time, select one and go to the next step</i></b></p>
+    <table class="table">
+      <thead>
+        <tr class="table">
+          <td><b>Please select </b></td>
+          <td><b>start time </b></td>
+          <td><b>endtime time </b></td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for available_time in available_times %}
+        <tr class="table">
+          <td>
+              <input type="radio" id={{available_time['time_id']}} name="selected_time" value={{available_time['time_id']}}>
+              <label for='{{available_time['time_id']}}'></label>
+          </td>
+        <td>{{ available_time['starttime'] }}</td>
+        <td>{{ available_time['endtime'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+
+  {% else %}
+    <p><b>No available time for this place, try another date or place</b></p>
+  {% endif %}
+{% endif %}
+
+{% if available_times %}
+
+  <h3>Edit event details</h3>
+  {{ eventform.hidden_tag() }}
+  {{ eventform.description.label }} {{ eventform.description }}<br>
+  {{ eventform.classlimit.label }} {{ eventform.classlimit }}<br>
+  {{ eventform.ageconstraint_lower.label }} {{ eventform.ageconstraint_lower }}<br>
+  {{ eventform.ageconstraint_upper.label }} {{ eventform.ageconstraint_upper }}<br>
+  {{ eventform.submit() }}
+
+
+{% endif %}
 </form>
 
+{% else %}
+
+<p>You are not a coach, only a coach can create event. Click <a href={{ url_for('userprofile.becomecoach', user_id=user_id) }}>here</a> to register as a coach</p>
+{% endif %}
 {% endblock %}

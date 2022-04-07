@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField, DateField, TimeField, TextAreaField, IntegerField, StringField
+from wtforms import SelectField, SubmitField, DateField, TimeField, TextAreaField, IntegerField, StringField, RadioField
 from wtforms.validators import DataRequired,Email,EqualTo, length, NumberRange
 from wtforms import ValidationError
 from flask_wtf.file import FileField, FileAllowed
@@ -27,16 +27,17 @@ class SearchEventForm(FlaskForm):
 
 
 class SearchTimeForm(FlaskForm):
+    place = RadioField('Place', choices=[(4, 'yoga room (typically for event)'), (5,'karate room (typically for event)'), (1,'cardio room'), (2,'strength training room'), (3, 'swimming pool')])
     date = DateField("Date", format="%Y-%m-%d",default=datetime.date.today()+datetime.timedelta(days=3), validators=[DataRequired()])
     # date = DateField('Date', format='%Y-%m-%d', validators=(DataRequired(),))
     starttime = TimeField('Earliest start time')
     endtime = TimeField('Latest end time')
     duration = IntegerField('Class duration in minutes', validators=[NumberRange(min=15, max=120), DataRequired()])
-    submit = SubmitField('Search availble time')
+    submit = SubmitField('Search availble time and place')
 
 class CreateEventForm(FlaskForm):
     description = StringField('Description', validators=[length(max=50), DataRequired()])
-    classlimit = IntegerField('Age', validators=[NumberRange(min=0, max=12), DataRequired()])
-    ageconstraint_lower = IntegerField('Lower age constraint', validators=[NumberRange(min=0, max=100), DataRequired()])
-    ageconstraint_upper = IntegerField('Higher age constraint', validators=[NumberRange(min=0, max=100), DataRequired()])
+    classlimit = IntegerField('Class limit', validators=[NumberRange(min=0, max=12), DataRequired()])
+    ageconstraint_lower = IntegerField('Recommended age lower', validators=[NumberRange(min=0, max=100), DataRequired()])
+    ageconstraint_upper = IntegerField('Recommended age higher', validators=[NumberRange(min=0, max=100), DataRequired()])
     submit = SubmitField('Submit')

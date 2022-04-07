@@ -9,6 +9,7 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from flask_restful import abort
 from marshmallow import ValidationError
 import sys
 import logging 
@@ -134,14 +135,72 @@ def event_info(event_id):
 @bp.route('/create', methods=['GET', 'POST'])
 def create():
     timeform = SearchTimeForm()
+    eventform = None
+    available_times = []
+    step = 0
     # timeform.date.default = datetime.date.today() + datetime.timedelta(days=3)
-
-    if timeform.validate_on_submit():
-        flash(timeform.date.data)
-        starttime = timeform.starttime.data
-        print(starttime, type(starttime))
-        print('Hi', flush=True)
-    else:
-        print(timeform.errors)
     
-    return render_template('event/create.html', timeform=timeform)
+    # if coach
+    db, cur = get_db()
+    cur.execute("SELECT * FROM coach WHERE user_id=%s", (session['user_id'], ))
+    coach_info = cur.fetchall()
+    print(coach_info)
+    
+    # search time form
+    if timeform.validate_on_submit():
+        step = 1
+        flash(timeform.date.data)
+        place_id = timeform.place.data
+        date = timeform.date.data
+        starttime = timeform.starttime.data
+        endtime = timeform.endtime.data
+        duration = timeform.duration.data
+        starttimep = datetime.datetime(date.year, date.month, date.day, starttime.hour, starttime.minute, starttime.second) 
+        endtimep = datetime.datetime(date.year, date.month, date.day, endtime.hour, endtime.minute, endtime.second) 
+        sql = """
+            SELECT starttime, endtime 
+            FROM event
+            WHERE date = %s
+            AND event_id in (SELECT event_id FROM Event_approve)
+            AND place_id = %s """
+                    
+        cur.execute(sql, (date, place_id, ))
+        unavailable_times = cur.fetchall()
+
+        # available time list
+        stattime_list = [datetime.datetime(date.year, date.month, date.day, h, 0, 0) for h in range(9, 21)]
+        stattime_list = [time for time in stattime_list if time >= starttimep and time <= endtimep]
+        available_times = []
+        time_id = 0
+        for tstart in stattime_list:
+            tend = tstart + datetime.timedelta(minutes=duration)
+            tflag = True 
+            for unavailable_time in unavailable_times:
+                if (tend > unavailable_time['starttime'] and tend <= unavailable_time['endtime']) or (tstart >= unavailable_time['starttime'] and tstart < unavailable_time['endtime']):
+                    tflag = False
+                    break
+            if tflag:
+                available_times.append({'time_id':time_id, 'starttime':tstart, 'endtime':tend})
+                time_id += 1
+
+        # details form
+        eventform = CreateEventForm()
+        if eventform.validate_on_submit():
+            time_id = request.form.get('selected_time')
+            print(type(time_id))
+            if not time_id:
+                print('Please select time')
+            else:
+                time_id = int(request.form['selected_time'])
+                timeselected = [a for a in available_times if a['time_id'] == time_id][0]
+                description = eventform.description.data 
+                classlimit = eventform.classlimit.data
+                ageconstraint_lower = eventform.ageconstraint_lower.data 
+                ageconstraint_upper = eventform.ageconstraint_upper.data                
+                sql = """
+                    INSERT INTO event (coach_id, date, place_id, starttime, endtime, description, classlimit, ageconstraint_lower, ageconstraint_upper) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+                """
+                cur.execute(sql, (coach_info[0]['coach_id'], date, place_id, timeselected['starttime'], timeselected['endtime'], description, classlimit, ageconstraint_lower, ageconstraint_upper))
+                db.commit()
+    return render_template('event/create.html', coach_info=coach_info, user_id=session['user_id'], timeform=timeform, eventform=eventform, available_times=available_times, step=step)
