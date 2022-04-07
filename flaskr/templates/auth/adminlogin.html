@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Log In{% endblock %}</h1> <a href="{{ url_for('auth.adminlogin') }}"><p>switch to admin login</p></a>
+  <h1>{% block title %}Admin Log In{% endblock %}</h1> <a href="{{ url_for('auth.login') }}"><p>switch to user login</p></a>
 {% endblock %}
 
 {% block content %}

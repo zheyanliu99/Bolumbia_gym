@@ -116,6 +116,36 @@ def login():
 
     return render_template("auth/login.html")
 
+@bp.route("/adminlogin", methods=("GET", "POST"))
+def adminlogin():
+    """Log in a registered user by adding the user id to the session."""
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        db, cur = get_db()
+        error = None
+        cur.execute(
+            """SELECT * FROM Users WHERE username = %s 
+               AND user_id in (SELECT user_id FROM admin)""", (username,)
+        )
+        user = cur.fetchone()
+        # print('***', user["password"], password)
+
+        if user is None:
+            error = "Incorrect username."
+        elif not check_password_hash(user["password"], password):
+            error = "Incorrect password."
+
+        if error is None:
+            # store the user id in a new session and return to the index
+            session.clear()
+            session["user_id"] = user["user_id"]
+            return redirect(url_for("core.index"))
+
+        flash(error)
+
+    return render_template("auth/adminlogin.html")
+
 
 @bp.route("/logout")
 def logout():
