@@ -125,8 +125,14 @@ def adminlogin():
         db, cur = get_db()
         error = None
         cur.execute(
-            """SELECT * FROM Users WHERE username = %s 
-               AND user_id in (SELECT user_id FROM admin)""", (username,)
+            """SELECT *
+               FROM 
+               (
+               SELECT * 
+               FROM Users 
+               WHERE username = %s)a
+               INNER JOIN admin 
+               ON a.user_id=admin.user_id """, (username,)
         )
         user = cur.fetchone()
         # print('***', user["password"], password)
@@ -140,7 +146,8 @@ def adminlogin():
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user["user_id"]
-            return redirect(url_for("core.index"))
+            session['admin_id'] = user["admin_id"]
+            return redirect(url_for("admin.index"))
 
         flash(error)
 

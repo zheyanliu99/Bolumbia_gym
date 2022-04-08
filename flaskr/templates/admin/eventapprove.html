@@ -1,0 +1,56 @@
+{% extends 'adminbase.html' %}
+
+{% block header %}
+  <h1>{% block title %}Approve event{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+
+{% if unapproved_events %}
+
+<p>Here are all the unapproved event, mind the time overlap among event! Accept one event will automatically decline others.
+  However, you can fix that by shutting down events. </p>
+
+<form method="POST">
+<table class="table">
+  <thead>
+    <tr class="table">
+      <td><b>coach name</b></td>
+      <td><b>description</b></td>
+      <td><b>start time </b></td>
+      <td><b>endtime time </b></td>
+      <td><b>place name</b></td>
+      <td><b>class limit</b></td>
+      <td><b>capacity</b></td>
+      <td><b>recommend age</b></td>
+    </tr>
+</thead>
+<tbody>
+    {% for unapproved_event in unapproved_events %}
+    <tr class="table">
+    <td>{{ unapproved_event['coach_name'] }}</td>
+    <td>{{ unapproved_event['description'] }}</td>
+    <td>{{ unapproved_event['starttime'] }}</td>
+    <td>{{ unapproved_event['endtime'] }}</td>
+    <td>{{ unapproved_event['place_name'] }}</td>
+    <td>{{ unapproved_event['classlimit'] }}</td>
+    <td>{{ unapproved_event['capacity'] }}</td>
+    <td>{{ unapproved_event['ageconstraint_lower'] }} to {{ unapproved_event['ageconstraint_upper'] }}</td>
+    <input id={{ unapproved_event['event_id'] }} name="book_id"
+    type="hidden" value="{{ unapproved_event['event_id'] }}">
+    <td><button type="submit" name="approvebutton" value="{{ unapproved_event['event_id'] }}"
+                formmethod="post">Approve</button></td>
+    <td><a href={{ url_for('event.event_info', event_id=unapproved_event['event_id']) }}>Details</a></td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+</form>
+
+{% else %}
+  <p>All the events are approved. Enjoy your day, admin {{g.user['username']}} !</p>
+{% endif %}
+
+ {% endblock %}
+

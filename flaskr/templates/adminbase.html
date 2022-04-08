@@ -15,7 +15,7 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="{{ url_for('core.index') }}">Bolumbia</a>
+  <a class="navbar-brand" href="{{ url_for('core.index') }}">Bolumbia Admin</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -24,37 +24,27 @@
     <ul class="navbar-nav mr-auto">
       {% if g.user %}
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('appointment.manage') }}">Appointment</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('routine.book') }}">Routine</a>
+        <a class="nav-link" href="{{ url_for('appointment.manage') }}">Q&A</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Event
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{{ url_for('event.book') }}">Book Event</a>
-          <a class="dropdown-item" href="{{ url_for('event.create') }}">Create Event</a>
+          <a class="dropdown-item" href="{{ url_for('admin.eventapprove') }}">Approve Event</a>
+          <a class="dropdown-item" href="{{ url_for('admin.eventshutdown') }}">Shut down Event</a>
         </div>
 
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          User
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{{ url_for('userprofile.show', user_id=session['user_id']) }}">My Profile</a>
-          <a class="dropdown-item" href="{{ url_for('post.createpost', user_id=session['user_id']) }}">CreatePost</a>
-          <a class="dropdown-item" href="{{ url_for('post.index') }}">Post</a>
-
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{{ url_for('userprofile.becomecoach', user_id=session['user_id']) }}">Become a coach</a>
-        </div>
+    </ul>
+      <div class="topnav-right">
+        <ul class="navbar-nav mr-auto">
         <li><span><i>{{ g.user['username'] }}</i></span></li>
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('auth.logout') }}">Log  Out</a>
       </li>
+    </ul>
+    </div>
       {% else %}
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
@@ -64,14 +54,7 @@
       </li>
 
       {% endif %}
-    </ul>
 
-    {% if g.user %}
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search Username" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-    {% endif %}
   </div>
 </nav>
 <section class="content">

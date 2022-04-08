@@ -1,0 +1,10 @@
+{% extends 'adminbase.html' %}
+
+{% block header %}
+  <h1>{% block title %}Bolumbia Admin page{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <b><p>Dear admin {{g.user['username']}}</p></b>
+ {% endblock %}
+
