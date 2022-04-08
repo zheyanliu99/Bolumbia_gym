@@ -7,11 +7,13 @@
 {% block content %}
 
 <ul class="list-group list-group-flush">
-    {% for event, event_heading in events_res %}
+    {% for event, event_heading in events_res[1:] %}
     <li class="list-group-item">{{ event_heading }} : {{ event }}</li>
     {% endfor %}
   </ul>
 
+  <br>
+  <a href={{ url_for('userprofile.show', user_id=events_res[0][0]) }}><b>Learn more about the coach</b></a>
 
 
 {% endblock %}

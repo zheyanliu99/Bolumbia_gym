@@ -44,16 +44,13 @@ def index():
 def eventapprove():
     db, cur = get_db()
     sql = """
-        SELECT d.username coach_name, a.description, starttime, endtime, place_name, classlimit, ageconstraint_lower, ageconstraint_upper, capacity, c.user_id, a.event_id 
-        FROM
-        (
-        SELECT a.*
+        WITH conflict_events as(
+        SELECT a.event_id
         FROM     
         (
         SELECT * 
         FROM event 
-        WHERE event_id not in (SELECT event_id FROM event_approve)
-        AND starttime > %s) a, 
+        WHERE event_id not in (SELECT event_id FROM event_approve)) a, 
         (
         SELECT t2.* 
         FROM event_approve t1
@@ -61,7 +58,15 @@ def eventapprove():
         ON t1.event_id = t2.event_id) b
         WHERE a.event_id != b.event_id 
         AND a.date = b.date
-        AND ((a.endtime > b.starttime AND a.endtime <= b.endtime) OR (a.starttime >= b.starttime AND a.starttime < b.endtime))) a
+        AND ((a.endtime > b.starttime AND a.endtime <= b.endtime) OR (a.starttime >= b.starttime AND a.starttime < b.endtime)))
+
+        SELECT d.username coach_name, a.description, starttime, endtime, place_name, classlimit, ageconstraint_lower, ageconstraint_upper, capacity, c.user_id, a.event_id 
+        FROM
+        (
+        SELECT *
+        FROM event 
+        WHERE event_id not in (SELECT event_id FROM event_approve)
+        AND event_id not in (SELECT event_id FROM conflict_events)) a
         INNER JOIN place p
         ON a.place_id = p.place_id
         INNER JOIN coach c 
@@ -69,7 +74,6 @@ def eventapprove():
         INNER JOIN users d 
         ON c.user_id = d.user_id
         ORDER BY starttime
-
     """
     cur.execute(sql, (datetime.datetime.now(), ))
     unapproved_events = cur.fetchall()
@@ -90,4 +94,61 @@ def eventapprove():
 
 @bp.route('/event/eventshutdown', methods=['GET', 'POST'])
 def eventshutdown():
-    pass
+    timeform = SearchEventForm()
+    approved_events = None
+    timeform.startdate.default = datetime.date.today()
+    timeform.enddate.default = datetime.date.today() + datetime.timedelta(days=14)
+
+    if timeform.validate_on_submit():
+        # flash('Here is all the available events')
+        # This try except is not necessary, can not work similarly as the routine
+        try:
+            timeform.validate_date(timeform.startdate, timeform.enddate)
+        except:
+            pass
+        else:
+            startdate = timeform.startdate.data
+            # startdate = max(datetime.date.today(), startdate) 
+            # timeform.startdate.data = startdate
+            enddate = timeform.enddate.data
+            print(startdate, enddate)
+            db, cur = get_db()
+            sql = """
+            WITH event_selected as (
+            SELECT * 
+            FROM event 
+            WHERE event_id in (SELECT event_id FROM event_approve)
+            AND date >= %s
+            AND date <= %s)
+
+            SELECT c.user_id, a.event_id, b.description, b.starttime, b.endtime, d.nickname coach_name, a.num_of_users participaters, b.classlimit
+            FROM
+            (
+            SELECT t1.event_id, count(distinct user_id)  as num_of_users
+            FROM event_selected t1
+            LEFT JOIN event_appointment t2
+            ON t1.event_id = t2.event_id
+            GROUP BY t1.event_id) a
+            INNER JOIN event_selected b
+            ON a.event_id = b.event_id 
+            INNER JOIN coach c
+            ON b.coach_id = c.coach_id
+            INNER JOIN users d
+            ON c.user_id = d.user_id
+            WHERE num_of_users < classlimit
+            ORDER BY b.starttime"""
+
+                    
+            cur.execute(sql, (startdate, enddate))
+            approved_events = cur.fetchall()
+            if request.form.get("shutdownbutton"):
+                event_id = request.form['shutdownbutton']
+                sql = "DELETE FROM event_approve WHERE event_id = %s"
+                try:
+                    cur.execute(sql, (event_id, ))
+                    db.commit()
+                except:
+                    flash('You have already shut down this event')
+                    return redirect(url_for('admin.eventshutdown'))
+
+    return render_template("admin/eventshutdown.html", approved_events=approved_events, timeform=timeform)

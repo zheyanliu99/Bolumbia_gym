@@ -51,9 +51,11 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ url_for('userprofile.becomecoach', user_id=session['user_id']) }}">Become a coach</a>
         </div>
-        <li><span><i>{{ g.user['username'] }}</i></span></li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('auth.logout') }}">Log  Out</a>
+        <li class="nav-item">
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search Username" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
       </li>
       {% else %}
       <li class="nav-item">
@@ -65,13 +67,16 @@
 
       {% endif %}
     </ul>
-
     {% if g.user %}
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search Username" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-    {% endif %}
+    <div class="topnav-right">
+      <ul class="navbar-nav mr-auto">
+      <li><span><i>{{ g.user['username'] }}</i></span></li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('auth.logout') }}">Log  Out</a>
+    </li>
+  </ul>
+  </div>
+  {% endif %}  
   </div>
 </nav>
 <section class="content">

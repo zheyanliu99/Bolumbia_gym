@@ -56,7 +56,7 @@ def book():
                 AND date >= %s
                 AND date <= %s)
 
-                SELECT a.event_id, b.description, b.starttime, b.endtime, d.nickname coach_name, a.num_of_users participaters, b.classlimit
+                SELECT a.event_id, b.description, b.starttime, b.endtime, d.nickname coach_name, a.num_of_users participaters, b.classlimit, b.ageconstraint_lower, b.ageconstraint_upper 
                 FROM
                 (
                 SELECT t1.event_id, count(distinct user_id)  as num_of_users
@@ -94,6 +94,7 @@ def book():
                         # commit to fail. Show a validation error.
                         print(e)
                         flash("Book failure, you have booked this event appointment before")
+                        return redirect(url_for('event.book'))
                 
     return render_template('event/book.html', form=form, headings=headings, res=res)
 
@@ -108,7 +109,7 @@ def event_info(event_id):
         FROM event 
         WHERE event_id = %s)
 
-        SELECT b.description, p.place_name place, b.starttime, b.endtime, d.nickname coach_name, a.num_of_users participaters, b.classlimit
+        SELECT d.user_id, b.description, p.place_name place, b.starttime, b.endtime, d.nickname coach_name, a.num_of_users participaters, b.classlimit
         FROM
         (
         SELECT t1.event_id, count(distinct user_id)  as num_of_users
@@ -130,6 +131,7 @@ def event_info(event_id):
     events = cur.fetchone()
     event_headings = [key for key in events.keys()]
     events_res = [(event, event_heading) for (event, event_heading) in zip(events, event_headings)]
+
     return render_template('event/event.html', events_res=events_res)
 
 @bp.route('/create', methods=['GET', 'POST'])

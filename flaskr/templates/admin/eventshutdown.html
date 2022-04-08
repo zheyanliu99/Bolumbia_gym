@@ -1,0 +1,57 @@
+{% extends 'adminbase.html' %}
+
+{% block header %}
+  <h1>{% block title %}Shutdown event{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="POST">
+  {# This hidden_tag is a CSRF security feature. #}
+  <h3>Choose time</h3>
+  {{ timeform.hidden_tag() }}
+  {{ timeform.startdate.label }} {{ timeform.startdate }}<br>
+  {{ timeform.enddate.label }} {{ timeform.enddate }}<br>
+  {{ timeform.submit() }}
+
+
+{% if approved_events and timeform.validate_on_submit()%}
+
+<table class="table">
+  <thead>
+    <tr class="table">
+      <td><b>coach name</b></td>
+      <td><b>description</b></td>
+      <td><b>start time </b></td>
+      <td><b>endtime time </b></td>
+      <td><b>participaters</b></td>
+      <td><b>class limit</b></td>
+    </tr>
+</thead>
+<tbody>
+    {% for approved_event in approved_events %}
+    <tr class="table">
+    <td>{{ approved_event['coach_name'] }}</td>
+    <td>{{ approved_event['description'] }}</td>
+    <td>{{ approved_event['starttime'] }}</td>
+    <td>{{ approved_event['endtime'] }}</td>
+    <td>{{ approved_event['participaters'] }}</td>
+    <td>{{ approved_event['classlimit'] }}</td>
+    <input id={{ approved_event['event_id'] }} name="book_id"
+    type="hidden" value="{{ approved_event['event_id'] }}">
+    <td><button type="submit" name="shutdownbutton" value="{{ approved_event['event_id'] }}"
+                formmethod="post">Shutdown</button></td>
+    <td><a href={{ url_for('event.event_info', event_id=approved_event['event_id']) }}>Details</a></td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+{% else %}
+
+<p>No approved events in this time range</p>
+
+{% endif %}
+
+</form>
+ {% endblock %}
+
