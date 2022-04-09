@@ -13,7 +13,7 @@ from flask import abort
 
 from flaskr.db import get_db
 
-from .forms.post import Postform
+from .forms.post import Postform, Commentform
 
 bp = Blueprint("post", __name__, url_prefix="/post")
 
@@ -28,42 +28,35 @@ def index():
     """Show all the posts, most recent first."""
     form = Postform()
     user_id = session["user_id"]
-    post = form.post.data
     title = form.title.data
-    print(title, post)
+    post = form.post.data
+    open_to = form.open_to.data
+    date = form.date.data
+
     db, cur = get_db()
     cur.execute("""
-               SELECT p.post_id, p.title, p.content, p.user_id, p.open_to
+               SELECT p.post_id, p.title, p.content, p.user_id, p.open_to, p.datetime, u.username
                FROM post p JOIN users u
                ON u.user_id = p.user_id""")
     posts = cur.fetchall()
+
     return render_template("post/postindex.html", posts=posts)
 
 
-#
+@bp.route("/<int:user_id>/Mypost")
 def get_post(user_id, check_author=True):
-    if user_id != session["user_id"]:
-        abort(404)
     db, cur = get_db()
     sql = """
-        SELECT p.post_id, p.user_id, p.title, p.content
-        from
-        (
         SELECT *
-        FROM users
-        WHERE user_id=%s) a
-        INNER JOIN post p
-        on a.user_id = p.user_id"""
-    cur.execute(sql, (user_id,))
-    post = cur.fetchone()
-
-    if post is None:
+        FROM post
+        WHERE user_id = %s
+        """
+    cur.execute(sql, (user_id, ))
+    mypost = cur.fetchall()
+    if mypost is None:
         abort(404)
 
-    if check_author and post["user_id"] != g.user["user_id"]:
-        abort(403)
-
-    return post
+    return render_template("post/mypost.html", mypost=mypost)
 
 
 # create post
@@ -74,49 +67,21 @@ def createpost():
     user_id = session["user_id"]
 
     if form.validate_on_submit():
-        # flash(form.post.data)
-        post = form.post.data
         title = form.title.data
+        post = form.post.data
+        open_to = form.open_to.data
+        date = form.date.data
 
         print('aaaa')
         db, cur = get_db()
         cur.execute(
-            "INSERT INTO post (title, content, user_id) VALUES (%s, %s, %s)",
-            (title, post, user_id),
+            "INSERT INTO post (title, content, open_to, datetime, user_id) VALUES (%s, %s, %s, %s, %s)",
+            (title, post, open_to, date, user_id),
         )
         db.commit()
         return redirect(url_for("post.index"))
 
     return render_template("post/postcreate.html", form = form, user_id = user_id)
-
-
-#post View
-@bp.route('/<int:user_id>')
-def postview(user_id):
-    if user_id != session["user_id"]:
-        abort(404)
-
-    db, cur = get_db()
-    sql = """
-        WITH post_selected as (
-        SELECT post_id, user_id
-        FROM post
-        WHERE user_id = %s)
-
-        SELECT p.post_id, p.content, p.title, p,datetime, p.open_to
-        FROM
-        (
-        SELECT *
-        FROM post_selected p1
-        JOIN post p
-        ON p.post_id = p1.post_id"""
-
-    cur.execute(sql, (post_id, user_id, content, title))
-    postviewing = cur.fetchone()
-    post_headings = [key for key in post.keys()]
-    post_res = [(postviewing, post_headings) for (postviewing, post_headings) in zip(postviewing, post_headings)]
-
-    return render_template('post/post.html', post_res = post_res)
 
 
 # update post
@@ -180,3 +145,21 @@ def delete(post_id):
     db.commit()
     flash("Deleted your post!")
     return redirect(url_for("post.index"))
+
+# comment
+@bp.route("/createcomment<int:post_id>", methods=("GET", "POST"))
+def createcomment(post_id):
+    """Create a new comment for posts."""
+    form = Commentform()
+    user_id = session["user_id"]
+    if form.validate_on_submit():
+        comment = form.comment.data
+        db, cur = get_db()
+        cur.execute(
+            "INSERT INTO comment (content, post_id, user_id) VALUES (%s, %s, %s)",
+            (comment, post_id, user_id),
+        )
+        db.commit()
+        return redirect(url_for("post.index"))
+
+    return render_template("post/postindex.html", form = form, user_id = user_id)

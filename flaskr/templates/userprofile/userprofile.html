@@ -7,9 +7,9 @@
 {% block content %}
 
 <form method="POST">
-  <h2>{% block title %} 
+  <h2>{% block title %}
     {% if if_current_user %}
-        My 
+        My
     {% else %}
         {{user_info['username']}}'s
     {% endif %} Profile
@@ -33,12 +33,12 @@
     <li class="list-group-item">email : {{ user_info['email'] }}</li>
     <li class="list-group-item">sex : {{ user_info['sex'] }}</li>
     <li class="list-group-item">age : {{ user_info['age'] }}</li>
-    <li class="list-group-item">followers : {{ followers['followers'] }} 
+    <li class="list-group-item">followers : {{ followers['followers'] }}
     {% if if_current_user %}
       <a href={{ url_for('userprofile.followers', user_id=user_id) }}>Details</a>
     {% endif %}
     </li>
-    <li class="list-group-item">following : {{ following['following'] }} 
+    <li class="list-group-item">following : {{ following['following'] }}
     {% if if_current_user %}
       <a href={{ url_for('userprofile.following', user_id=user_id) }}>Details</a>
     {% endif %}
@@ -47,7 +47,7 @@
 
 
       {% if coaching_info %}
-        <h2>Coaching</h2>   
+        <h2>Coaching</h2>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">description : {{ coaching_info['description'] }}</li>
             <li class="list-group-item">experience years : {{ coaching_info['experienceyears'] }}</li>
@@ -59,7 +59,5 @@
       {% endif %}
 
   <h2>Recent Post</h2>
-
-
 
 {% endblock %}

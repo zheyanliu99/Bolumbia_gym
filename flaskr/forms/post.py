@@ -14,3 +14,7 @@ class Postform(FlaskForm):
     open_to = SelectField(u'open_to', choices=[('everyone', 'everyone'), ('just myself', 'just myself')], validators=(DataRequired(),))
     date = DateField('Date', format='%Y-%m-%d', validators=(DataRequired(),))
     submit = SubmitField('sumbit posts')
+
+class Commentform(FlaskForm):
+    comment = TextAreaField('post', validators=(DataRequired(),))
+    submit = SubmitField('sumbit posts')
