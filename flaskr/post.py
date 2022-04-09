@@ -161,16 +161,22 @@ def update(post_id):
 # delete
 @bp.route("/<int:post_id>/delete", methods=("POST",))
 def delete(post_id):
-    """Delete a post.
-    Ensures that the post exists and that the logged in user is the
-    author of the post.
-    """
 
-    get_post(post_id)
+    user_id = session["user_id"]
+    db, cur = get_db()
+    sql = """
+        SELECT *
+        FROM post
+        WHERE post_id = %s AND user_id = %s
+        """
+    cur.execute(sql, (post_id, user_id))
+    post = cur.fetchone()
+    get_post(user_id)
     db, cur= get_db()
     sql = """
-        DELETE FROM post WHERE post_id = %s
+        DELETE FROM post WHERE post_id = %s AND user_id = %s
     """
-    cur.execute(sql, (post_id))
+    cur.execute(sql, (post_id, user_id))
     db.commit()
+    flash("Deleted your post!")
     return redirect(url_for("post.index"))
