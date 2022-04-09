@@ -46,7 +46,7 @@ def get_post(user_id, check_author=True):
         abort(404)
     db, cur = get_db()
     sql = """
-        SELECT p.post_id, p.user_id
+        SELECT p.post_id, p.user_id, p.title, p.content
         from
         (
         SELECT *
@@ -77,14 +77,7 @@ def createpost():
         # flash(form.post.data)
         post = form.post.data
         title = form.title.data
-        # error = None
 
-        # if not title:
-        #     error = "Title is required."
-        #
-        # if error is not None:
-        #     flash(error)
-        # else:
         print('aaaa')
         db, cur = get_db()
         cur.execute(
@@ -126,58 +119,43 @@ def postview(user_id):
     return render_template('post/post.html', post_res = post_res)
 
 
-#update
-#@bp.route('/<int:post_id>/update', methods=['GET', 'POST'])
-#def updatepost(post_id):
-#    post = post.query.get_or_404(post_id)
-#
-#    if post.post_id != current_user:
-#        abort(403)
-#    form = Postform()
-#
-#    if form.validate_on_submit():
-#        post.Title = form.Title.data
-#        post.Content = form.Content.data
-#        cur.execute(
-#            "INSERT INTO post (title, content) VALUES (%s, %s)",
-#            (title, content, user_id),
-#        )
-#        db.commit()
-#
-#    return render_template('post/postcreate.html', form=form)#
-#
-#
-#    return render_template('post/post.html', form = form)
-
 # update post
-@bp.route("/<int:user_id>/update", methods=("GET", "POST"))
-def update(user_id):
+@bp.route("/<int:post_id>/update", methods=("GET", "POST"))
+def update(post_id):
+    user_id = session["user_id"]
     """Update a post if the current user is the author."""
-    post = get_post(user_id)
+    db, cur = get_db()
+    sql = """
+        SELECT *
+        FROM post
+        WHERE post_id = %s AND user_id = %s
+        """
+    cur.execute(sql, (post_id, user_id))
+    post = cur.fetchone()
 
-    if request.method == "POST":
-        post = form.post.data
+    form = Postform(
+        title = post['title'],
+        post = post['content'],
+        open_to = post['open_to'],
+        date = post['datetime'])
+
+    if form.validate_on_submit():
         title = form.title.data
-        error = None
+        post = form.post.data
+        open_to = form.open_to.data
+        date = form.date.data
+        # update sql
+        sql = """
+            UPDATE post
+            SET title = %s, content = %s, open_to = %s, datetime = %s
+            WHERE post_id = %s
+        """
+        cur.execute(sql, (title, post, open_to, date, post_id))
+        db.commit()
+        flash("updated your post!")
+        return redirect(url_for('post.index'))
 
-        if not title:
-            error = "Title is required."
-
-        if error is not None:
-            flash(error)
-        else:
-            db, cur = get_db()
-            sql = """
-                UPDATE post
-                SET title = %s, content = %s
-                WHERE user_id = %s
-            """
-            cur.execute(sql, (title, post))
-            db.commit()
-            flash("updated")
-            return redirect(url_for("post.index"))
-
-    return render_template("post/postupdate.html", post=post)
+    return render_template('post/postupdate.html', user_id = user_id, post = post, form = form)
 
 
 # delete

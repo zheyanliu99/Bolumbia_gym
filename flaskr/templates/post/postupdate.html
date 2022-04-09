@@ -1,18 +1,21 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Edit "{{ post['title'] }}"{% endblock %}</h1>
+  <h1>Edit my post</h1>
 {% endblock %}
 
 {% block content %}
   <form method="post">
-    <label for="title">title</label>
-    <input name="title" id="title" value="{{ request.form['title'] or post['title'] }}" required>
-    <label for="body">post</label>
-    <textarea name="body" id="body">{{ request.form['body'] or post['post'] }}</textarea>
-    <input type="submit" value="Save">
+    {# This hidden_tag is a CSRF security feature. #}
+    <h3>Post Infomation</h3>
+    {{ form.hidden_tag() }}
+    {{ form.title.label }} {{ form.title }}<br>
+    {{ form.post.label }} {{ form.post }}<br>
+    {{ form.open_to.label }} {{ form.open_to }}<br>
+    {{ form.date.label }} {{ form.date }}<br>
+    {{ form.submit() }}
   </form>
-  <hr>
+    <h3>Post Delete</h3>
   <form action="{{ url_for('post.delete', post_id = post['post_id']) }}" method="post">
     <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
   </form>
