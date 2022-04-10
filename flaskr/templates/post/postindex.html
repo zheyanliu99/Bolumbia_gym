@@ -19,7 +19,7 @@
           <a class="action" href="{{ url_for('post.update', post_id=post['post_id']) }}">Edit</a>
         {% endif %}
         <a class="action" href="{{ url_for('post.createcomment', post_id=post['post_id']) }}">Make a comment</a>
-        <a class="action" href="{{ url_for('post.like', post_id=post['post_id']) }}">like or not</a>
+        <!-- <a class="action" href="{{ url_for('post.like', post_id=post['post_id']) }}">like or not</a> -->
       </header>
 
       <p class="body"> <big>{{ post['content'] }}</big></p>
