@@ -33,6 +33,9 @@ def index():
     open_to = form.open_to.data
     date = form.date.data
 
+    commentform = Commentform()
+    comment = commentform.comment.data
+
     db, cur = get_db()
     cur.execute("""
                SELECT p.post_id, p.title, p.content, p.user_id, p.open_to, p.datetime, u.username
@@ -40,7 +43,13 @@ def index():
                ON u.user_id = p.user_id""")
     posts = cur.fetchall()
 
-    return render_template("post/postindex.html", posts=posts)
+    cur.execute("""
+                SELECT c.content, c.post_id, c.user_id
+                FROM comment c JOIN post p
+                ON c.post_id = p.post_id""")
+    comments = cur.fetchall()
+
+    return render_template("post/postindex.html", posts=posts, comments = comments)
 
 
 @bp.route("/<int:user_id>/Mypost")
@@ -146,7 +155,7 @@ def delete(post_id):
     flash("Deleted your post!")
     return redirect(url_for("post.index"))
 
-# comment
+# createcomment
 @bp.route("/createcomment<int:post_id>", methods=("GET", "POST"))
 def createcomment(post_id):
     """Create a new comment for posts."""
@@ -160,6 +169,6 @@ def createcomment(post_id):
             (comment, post_id, user_id),
         )
         db.commit()
-        return redirect(url_for("post.index"))
+        return redirect(url_for('post.index'))
 
-    return render_template("post/postindex.html", form = form, user_id = user_id)
+    return render_template('post/postcomment.html', form = form, user_id = user_id, post_id = post_id)

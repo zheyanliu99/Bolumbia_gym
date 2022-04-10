@@ -17,4 +17,4 @@ class Postform(FlaskForm):
 
 class Commentform(FlaskForm):
     comment = TextAreaField('post', validators=(DataRequired(),))
-    submit = SubmitField('sumbit posts')
+    submit = SubmitField('sumbit conmment')

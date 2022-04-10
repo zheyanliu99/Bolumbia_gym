@@ -18,17 +18,26 @@
         {% if g.user['user_id'] == post['user_id'] %}
           <a class="action" href="{{ url_for('post.update', post_id=post['post_id']) }}">Edit</a>
         {% endif %}
+        <a class="action" href="{{ url_for('post.createcomment', post_id=post['post_id']) }}">Make a comment</a>
       </header>
+
       <p class="body"> Post: {{ post['content'] }}</p>
-      <a class="action" href="{{ url_for('post.createcomment', post_id=post['post_id']) }}">Comment</a>
       <p> Open to: {{ post['open_to']}}</p>
       <p class="Datetime"> Post Datetime: {{ post['datetime']}}</p>
-      <input type="text" id = "comment" name="comment" placeholder = "Enter Comment Here" href="{{ url_for('post.createcomment', post_id=post['post_id']) }}" required>
-      <input type="submit" value="" onclick="return confirm('Are you done?');">
+
+      <p> Comments:</p>
+      {% for comment in comments %}
+        {% if comment['post_id'] == post['post_id'] %}
+        <article class="post">
+          <li class="list-group-item">{{ comment['content'] }}</li>
+        </article>
+        {% endif %}
+      {% endfor %}
 
     </article>
     {% if not loop.last %}
       <hr>
     {% endif %}
   {% endfor %}
+
 {% endblock %}
