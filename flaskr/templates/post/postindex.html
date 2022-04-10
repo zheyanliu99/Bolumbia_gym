@@ -25,6 +25,14 @@
       <p> Open to: {{ post['open_to']}}</p>
       <p class="Datetime"> Post Datetime: {{ post['datetime']}}</p>
 
+      {% for like in Liked %}
+        {% if like['post_id'] == post['post_id'] %}
+        <article class="post">
+          <li class="list-group-item">{{ like['if_like'] }}</li>
+        </article>
+        {% endif %}
+      {% endfor %}
+
       <p> Comments:</p>
       {% for comment in comments %}
         {% if comment['post_id'] == post['post_id'] %}

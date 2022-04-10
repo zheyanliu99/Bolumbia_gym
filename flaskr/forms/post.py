@@ -18,3 +18,7 @@ class Postform(FlaskForm):
 class Commentform(FlaskForm):
     comment = TextAreaField('post', validators=(DataRequired(),))
     submit = SubmitField('sumbit conmment')
+
+class Likeform(FlaskForm):
+    like = SelectField(u'like', choices=[('like', 'like'), ('dislike', 'dislike')], validators=(DataRequired(),))
+    submit = SubmitField('sumbit conmment')

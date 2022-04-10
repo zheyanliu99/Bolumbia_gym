@@ -13,7 +13,7 @@ from flask import abort
 
 from flaskr.db import get_db
 
-from .forms.post import Postform, Commentform
+from .forms.post import Postform, Commentform, Likeform
 
 bp = Blueprint("post", __name__, url_prefix="/post")
 
@@ -36,6 +36,9 @@ def index():
     commentform = Commentform()
     comment = commentform.comment.data
 
+    likeform = Likeform()
+    like = likeform.like.data
+
     db, cur = get_db()
     cur.execute("""
                SELECT p.post_id, p.title, p.content, p.user_id, p.open_to, p.datetime, u.username
@@ -49,7 +52,13 @@ def index():
                 ON c.post_id = p.post_id""")
     comments = cur.fetchall()
 
-    return render_template("post/postindex.html", posts=posts, comments = comments)
+    cur.execute("""
+                SELECT L.if_like, L.post_id, L.user_id
+                FROM liked L JOIN post p
+                ON L.post_id = p.post_id""")
+    liked = cur.fetchall()
+
+    return render_template("post/postindex.html", posts=posts, comments = comments, liked = liked)
 
 
 @bp.route("/<int:user_id>/Mypost")
@@ -135,24 +144,22 @@ def update(post_id):
 # delete
 @bp.route("/<int:post_id>/delete", methods=("POST",))
 def delete(post_id):
-
     user_id = session["user_id"]
-    db, cur = get_db()
-    sql = """
-        SELECT *
-        FROM post
-        WHERE post_id = %s AND user_id = %s
-        """
-    cur.execute(sql, (post_id, user_id))
-    post = cur.fetchone()
-    get_post(user_id)
     db, cur= get_db()
+
+    sql = """
+        DELETE FROM comment WHERE post_id = %s AND user_id = %s
+    """
+    cur.execute(sql, (post_id, user_id))
+    db.commit()
+
     sql = """
         DELETE FROM post WHERE post_id = %s AND user_id = %s
     """
     cur.execute(sql, (post_id, user_id))
     db.commit()
-    flash("Deleted your post!")
+
+    flash("Deleted your post and all comments!")
     return redirect(url_for("post.index"))
 
 # createcomment
@@ -172,3 +179,20 @@ def createcomment(post_id):
         return redirect(url_for('post.index'))
 
     return render_template('post/postcomment.html', form = form, user_id = user_id, post_id = post_id)
+
+# create like or dislike
+@bp.route("/likeornot<int:post_id>", methods=("GET", "POST"))
+def like(post_id):
+    form = Likeform()
+    user_id = session["user_id"]
+    if form.validate_on_submit():
+        like = form.like.data
+        db, cur = get_db()
+        cur.execute(
+            "INSERT INTO liked (if_like, post_id, user_id) VALUES (%s, %s, %s)",
+            (like, post_id, user_id),
+        )
+        db.commit()
+        return redirect(url_for('post.index'))
+
+    return render_template('post/postindex.html', form = form, user_id = user_id, post_id = post_id)
