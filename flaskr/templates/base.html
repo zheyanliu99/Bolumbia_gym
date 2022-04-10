@@ -45,14 +45,23 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{{ url_for('userprofile.show', user_id=session['user_id']) }}">My Profile</a>
-          <a class="dropdown-item" href="{{ url_for('post.createpost', user_id=session['user_id']) }}">CreatePost</a>
-          <a class="dropdown-item" href="{{ url_for('post.index') }}">All Post</a>
-          <a class="dropdown-item" href="{{ url_for('post.get_post', user_id=session['user_id']) }}">My Post</a>
 
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ url_for('userprofile.becomecoach', user_id=session['user_id']) }}">Become a coach</a>
         </div>
         <li class="nav-item">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Post
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('post.index') }}">All Post</a>
+            <a class="dropdown-item" href="{{ url_for('post.get_post', user_id=session['user_id']) }}">My Post</a>
+            <a class="dropdown-item" href="{{ url_for('post.createpost', user_id=session['user_id']) }}">CreatePost</a>
+          </div>
+          <li class="nav-item">
+
         <form class="form-inline my-2 my-lg-0">
           <input class="form-control mr-sm-2" type="search" placeholder="Search Username" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>

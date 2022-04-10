@@ -8,6 +8,7 @@
   <form method="post">
     {# This hidden_tag is a CSRF security feature. #}
     {{ form.hidden_tag() }}
+    {{ form.anonymous.label }} {{ form.anonymous}}<br>
     {{ form.comment.label }} {{ form.comment}}<br>
     {{ form.submit() }}
   </form>

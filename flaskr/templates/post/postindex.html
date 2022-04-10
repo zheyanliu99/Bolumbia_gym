@@ -12,8 +12,8 @@
     <article class="post">
       <header>
         <div>
-          <h1>{{ post['title'] }}</h1>
-          <div class="about">by {{ post['username'] }}</div>
+          <h2>{{ post['title'] }}</h2>
+          <div class="about">by <a href={{ url_for('userprofile.show', user_id=post['user_id']) }}>{{ post['username'] }}</a>, {{ post['datetime'].strftime("%m/%d/%Y, %H:%M:%S")}}</div>
         </div>
         {% if g.user['user_id'] == post['user_id'] %}
           <a class="action" href="{{ url_for('post.update', post_id=post['post_id']) }}">Edit</a>
@@ -22,26 +22,26 @@
         <a class="action" href="{{ url_for('post.like', post_id=post['post_id']) }}">like or not</a>
       </header>
 
-      <p class="body"> Post: {{ post['content'] }}</p>
-      <p> Open to: {{ post['open_to']}}</p>
-      <p class="Datetime"> Post Datetime: {{ post['datetime']}}</p>
-
-      {% for like in liked %}
-        {% if like['post_id'] == post['post_id'] %}
-          {% if like['if_like'] == True %}
-            <p class="post"> You liked the post </p>
-          {% endif %}
-          {% if like['if_like'] == False %}
-            <p class="post"> You disliked the post </p>
-          {% endif %}
+      <p class="body"> <big>{{ post['content'] }}</big></p>
+      
+      <article class="post">
+        {% if [post['post_id']] not in responsed_post%}
+          <a href={{ url_for('post.like', post_id=post['post_id']) }}><img src="../../static/images/like.png" alt="Snow" width="24"></a> <i>{{ like_dislike_dict[post['post_id']]['like_sum'] }} &nbsp &nbsp &nbsp</i>
+          <a href={{ url_for('post.dislike', post_id=post['post_id']) }}><img src="../../static/images/dislike.png" alt="Snow" width="24"></a> <i>{{ like_dislike_dict[post['post_id']]['dislike_sum'] }} </i>
+        {% else %}
+          <img src="../../static/images/like.png" alt="Snow" width="24"> <i>{{ like_dislike_dict[post['post_id']]['like_sum'] }} &nbsp &nbsp &nbsp</i>
+          <img src="../../static/images/dislike.png" alt="Snow" width="24"> <i>{{ like_dislike_dict[post['post_id']]['dislike_sum'] }} </i>
         {% endif %}
-      {% endfor %}
-
-      <p> Comments:</p>
+      <h4> Comments:</h4>
+     </article>
       {% for comment in comments %}
         {% if comment['post_id'] == post['post_id'] %}
         <article class="post">
-          <li class="list-group-item">{{ comment['content'] }}</li>
+          {% if comment['if_anonymous'] %}
+          <li class="list-group-item">Anonymous: {{ comment['content'] }}</li>
+          {% else %}
+          <li class="list-group-item"><a href={{ url_for('userprofile.show', user_id=comment['user_id']) }}>{{ comment['username'] }}</a>: {{ comment['content'] }}</li>
+          {% endif %}
         </article>
         {% endif %}
       {% endfor %}
