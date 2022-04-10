@@ -19,17 +19,21 @@
           <a class="action" href="{{ url_for('post.update', post_id=post['post_id']) }}">Edit</a>
         {% endif %}
         <a class="action" href="{{ url_for('post.createcomment', post_id=post['post_id']) }}">Make a comment</a>
+        <a class="action" href="{{ url_for('post.like', post_id=post['post_id']) }}">like or not</a>
       </header>
 
       <p class="body"> Post: {{ post['content'] }}</p>
       <p> Open to: {{ post['open_to']}}</p>
       <p class="Datetime"> Post Datetime: {{ post['datetime']}}</p>
 
-      {% for like in Liked %}
+      {% for like in liked %}
         {% if like['post_id'] == post['post_id'] %}
-        <article class="post">
-          <li class="list-group-item">{{ like['if_like'] }}</li>
-        </article>
+          {% if like['if_like'] == True %}
+            <p class="post"> You liked the post </p>
+          {% endif %}
+          {% if like['if_like'] == False %}
+            <p class="post"> You disliked the post </p>
+          {% endif %}
         {% endif %}
       {% endfor %}
 

@@ -176,6 +176,7 @@ def createcomment(post_id):
             (comment, post_id, user_id),
         )
         db.commit()
+        flash("Your comment and all comments!")
         return redirect(url_for('post.index'))
 
     return render_template('post/postcomment.html', form = form, user_id = user_id, post_id = post_id)
@@ -195,4 +196,4 @@ def like(post_id):
         db.commit()
         return redirect(url_for('post.index'))
 
-    return render_template('post/postindex.html', form = form, user_id = user_id, post_id = post_id)
+    return render_template('post/postlike.html', form = form, user_id = user_id, post_id = post_id)

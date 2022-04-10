@@ -20,5 +20,5 @@ class Commentform(FlaskForm):
     submit = SubmitField('sumbit conmment')
 
 class Likeform(FlaskForm):
-    like = SelectField(u'like', choices=[('like', 'like'), ('dislike', 'dislike')], validators=(DataRequired(),))
-    submit = SubmitField('sumbit conmment')
+    like = SelectField(u'like', choices=[('1', 'like'), ('0', 'dislike')], validators=(DataRequired(),))
+    submit = SubmitField('sumbit')
