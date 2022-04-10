@@ -154,6 +154,12 @@ def delete(post_id):
     db.commit()
 
     sql = """
+        DELETE FROM liked WHERE post_id = %s AND user_id = %s
+    """
+    cur.execute(sql, (post_id, user_id))
+    db.commit()
+
+    sql = """
         DELETE FROM post WHERE post_id = %s AND user_id = %s
     """
     cur.execute(sql, (post_id, user_id))
