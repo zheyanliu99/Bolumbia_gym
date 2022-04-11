@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}New question{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    {{ form.title.label }} {{ form.title }}<br>
+    {{ form.content.label }} {{ form.content }}<br>
+    {{ form.submit() }}
+  </form>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Q&A{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('QA.createquestion') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for Q in Q_A %}
+    <article class="post">
+      <header>
+        <div>
+          <h2>{{ Q['questiontitle'] }}</h2>
+          <div class="about">by <a href={{ url_for('userprofile.show', user_id=Q['user_id']) }}>{{ Q['username'] }}</a>, {{ Q['raisedate'].strftime("%m/%d/%Y, %H:%M:%S")}}</div>
+        </div>
+        {% if g.user['user_id'] == Q['user_id'] %}
+        <form action="{{ url_for('QA.delete', questiontitle_id = Q['questiontitle_id']) }}" method="post">
+          <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+        </form>
+        {% endif %}
+
+        {% if g.user['user_id'] == admin['user_id'] %}
+          <a class="action" href="{{ url_for('QA.answer', questiontitle_id=Q['questiontitle_id']) }}">Answer</a>
+        {% endif %}
+
+      </header>
+
+      <p class="body"> Question: {{ Q['questioncontent'] }}</p>
+
+      {% for A in Answer %}
+          {% if A['questiontitle_id'] == Q['questiontitle_id'] %}
+            <article class="post">
+                <li class="list-group-item"><a href={{ url_for('userprofile.show', user_id=A['user_id']) }}>{{ A['username'] }}</a>: {{ A['answer_content'] }}</li>
+            </article>
+          {% endif %}
+      {% endfor %}
+
+      <form action="{{ url_for('QA.answer', questiontitle_id = Q['questiontitle_id']) }}" method="post">
+        <input type="submit" value="Answer">
+      </form>
+
+
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}
