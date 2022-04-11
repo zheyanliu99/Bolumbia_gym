@@ -53,7 +53,7 @@ def index():
     return render_template("QA/QAindex.html", Q_A = Q_A, form = form, Answer = Answer, admin = admin)
 
 
-# create post
+# create question
 @bp.route("/createquestion", methods=("GET", "POST"))
 def createquestion():
     form = Q_Aform()
@@ -126,3 +126,36 @@ def answer(questiontitle_id):
             return redirect(url_for("QA.index"))
 
     return render_template("QA/QAanswer.html", form = form, user_id = user_id, admin_id = admin_id)
+
+
+#edit the answer
+@bp.route("/editanswer/<int:questiontitle_id>", methods=("GET", "POST"))
+def edit(questiontitle_id):
+    user_id = session["user_id"]
+    db, cur = get_db()
+
+    sql = """
+        SELECT *
+        FROM answer
+        WHERE questiontitle_id = %s
+        """
+    cur.execute(sql, (questiontitle_id,))
+    Answer = cur.fetchone()
+
+    form = Q_AAnswer(Answer = Answer['answer_content'], date = Answer['answer_time'])
+
+    if form.validate_on_submit():
+        Answer = form.Answer.data
+        date = datetime.datetime.now()
+        # update sql
+        sql = """
+            UPDATE answer
+            SET answer_content = %s, answer_time = %s
+            WHERE questiontitle_id = %s
+        """
+        cur.execute(sql, (Answer, date, questiontitle_id))
+        db.commit()
+        flash("updated your answer!")
+        return redirect(url_for('QA.index'))
+
+    return render_template('QA/QAansweredit.html', user_id = user_id, questiontitle_id = questiontitle_id, form = form)
