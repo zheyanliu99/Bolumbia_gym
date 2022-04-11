@@ -22,7 +22,9 @@
         {% endif %}
 
         {% if g.user['user_id'] == admin['user_id'] %}
-          <a class="action" href="{{ url_for('QA.answer', questiontitle_id=Q['questiontitle_id']) }}">Answer</a>
+            <form action="{{ url_for('QA.answer', questiontitle_id = Q['questiontitle_id']) }}" method="post">
+                <input type="submit" value="Answer">
+            </form>
         {% endif %}
 
       </header>
@@ -33,14 +35,12 @@
           {% if A['questiontitle_id'] == Q['questiontitle_id'] %}
             <article class="post">
                 <li class="list-group-item"><a href={{ url_for('userprofile.show', user_id=A['user_id']) }}>{{ A['username'] }}</a>: {{ A['answer_content'] }}</li>
-                <a class="action" href="{{ url_for('QA.edit', questiontitle_id=Q['questiontitle_id']) }}">Edit the Answer</a>
+                  {% if g.user['user_id'] == admin['user_id'] %}
+                    <a class="action" href="{{ url_for('QA.edit', questiontitle_id=Q['questiontitle_id']) }}">Edit the Answer</a>
+                  {% endif %}
             </article>
           {% endif %}
       {% endfor %}
-
-      <form action="{{ url_for('QA.answer', questiontitle_id = Q['questiontitle_id']) }}" method="post">
-        <input type="submit" value="Answer">
-      </form>
 
 
     </article>

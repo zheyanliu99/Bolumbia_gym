@@ -46,7 +46,7 @@ def index():
 
     cur.execute("""
                 SELECT a.user_id, a.admin_id
-                From admin a JOIN users u
+                From admin a LEFT JOIN users u
                 ON u.user_id = a.user_id""")
     admin = cur.fetchall()
 
@@ -109,7 +109,6 @@ def answer(questiontitle_id):
 
     cur.execute("SELECT admin_id From admin WHERE user_id = %s", (user_id,))
     admin_id = cur.fetchone()
-    admin_id = admin_id['admin_id']
 
     if admin_id is None:
         flash("Only admin can answer the question!")
@@ -125,7 +124,7 @@ def answer(questiontitle_id):
             db.commit()
             return redirect(url_for("QA.index"))
 
-    return render_template("QA/QAanswer.html", form = form, user_id = user_id, admin_id = admin_id)
+    return render_template("QA/QAanswer.html", questiontitle_id = questiontitle_id, form = form, user_id = user_id, admin_id = admin_id)
 
 
 #edit the answer
@@ -158,4 +157,19 @@ def edit(questiontitle_id):
         flash("updated your answer!")
         return redirect(url_for('QA.index'))
 
-    return render_template('QA/QAansweredit.html', user_id = user_id, questiontitle_id = questiontitle_id, form = form)
+    return render_template('QA/QAanswer.html', user_id = user_id, questiontitle_id = questiontitle_id, form = form)
+
+# delete the answer
+@bp.route("/<int:questiontitle_id>/deleteanswer", methods=("POST",))
+def deleteanswer(questiontitle_id):
+    user_id = session["user_id"]
+    db, cur= get_db()
+
+    sql = """
+        DELETE FROM answer WHERE questiontitle_id = %s
+    """
+    cur.execute(sql, (questiontitle_id, ))
+    db.commit()
+
+    flash("Deleted your answer!")
+    return redirect(url_for("QA.index"))

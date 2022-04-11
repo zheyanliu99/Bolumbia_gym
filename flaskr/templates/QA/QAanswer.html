@@ -11,4 +11,9 @@
     {{ form.Answer.label }} {{ form.Answer }}<br>
     {{ form.submit() }}
   </form>
+  <h3>Answer Delete</h3>
+<form action="{{ url_for('QA.deleteanswer', questiontitle_id = questiontitle_id) }}" method="post">
+  <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+</form>
+
 {% endblock %}
