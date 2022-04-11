@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block content %}
-  <form method="POST">
+
+  <form method="POST"  action = "" enctype="multipart/form-data">
+    <!-- <img align='center' src="{{ profile_image }}" width="25%"> -->
     {# This hidden_tag is a CSRF security feature. #}
     <h3>User Infomation</h3>
     {{ form.hidden_tag() }}
@@ -13,6 +15,11 @@
     {{ form.email.label }} {{ form.email }}<br>
     {{ form.age.label }} {{ form.age }}<br>
     {{ form.sex.label }} {{ form.sex }}<br>
+    <div class="form-group">
+      
+      {{ form.picture.label(class="form-group") }}
+      {{ form.picture(class="form-control-file") }}
+    </div>
     {% if coach_info %}
     <h3>Coach Infomation</h3>
       {{ form.description.label }} {{ form.description }}<br>

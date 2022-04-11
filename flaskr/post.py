@@ -31,7 +31,7 @@ def index():
     db, cur = get_db()
 
     cur.execute("""
-               SELECT p.post_id, p.title, p.content, p.user_id, p.open_to, p.datetime, u.username
+               SELECT p.post_id, p.title, p.content, p.user_id, p.open_to, p.datetime, u.username, u.avatar
                FROM post p 
                JOIN users u
                ON u.user_id = p.user_id

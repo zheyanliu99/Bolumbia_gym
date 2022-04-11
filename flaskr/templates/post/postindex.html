@@ -12,7 +12,7 @@
     <article class="post">
       <header>
         <div>
-          <h2>{{ post['title'] }}</h2>
+          <h2><img align='center' src="{{ url_for('static', filename='profile_pics/' + post['avatar']) }}"  width=7%> {{ post['title'] }}</h2>
           <div class="about">by <a href={{ url_for('userprofile.show', user_id=post['user_id']) }}>{{ post['username'] }}</a>, {{ post['datetime'].strftime("%m/%d/%Y, %H:%M:%S")}}</div>
         </div>
         {% if g.user['user_id'] == post['user_id'] %}

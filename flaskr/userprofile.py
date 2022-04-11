@@ -13,6 +13,7 @@ from flask import abort
 
 from flaskr.db import get_db
 from .forms.userprofile import UserProfileForm, BecomeCoachForm
+from .picture_handler import add_profile_pic
 
 bp = Blueprint("userprofile", __name__, url_prefix="/userprofile")
 
@@ -42,7 +43,7 @@ def show(user_id):
     if_follow = cur.fetchone()
 
     # Get user info
-    cur.execute("SELECT username, nickname, email, sex, age FROM users WHERE user_id = %s", (user_id, ))
+    cur.execute("SELECT username, nickname, email, sex, age, avatar FROM users WHERE user_id = %s", (user_id, ))
     user_info = cur.fetchone()
 
     cur.execute("SELECT count(*) as followers FROM follow_record WHERE user_id = %s", (user_id, ))
@@ -99,8 +100,10 @@ def show(user_id):
                 flash("Unfollow failure, you do not follow this user")
 
         return redirect(url_for('userprofile.show', user_id=user_id))
+    
+    profile_image = url_for('static', filename='profile_pics/' + user_info['avatar'])
     return render_template('userprofile/userprofile.html', user_id=user_id, current_user_id=current_user_id, if_current_user=if_current_user, if_follow=if_follow,
-        user_info=user_info, followers=followers, following=following, coaching_info=coaching_info, coaching_info_more=coaching_info_more)
+        user_info=user_info, followers=followers, following=following, coaching_info=coaching_info, coaching_info_more=coaching_info_more, profile_image=profile_image)
 
 
 @bp.route('/<int:user_id>/follower', methods=['GET', 'POST'])
@@ -157,25 +160,40 @@ def edit(user_id):
     db, cur = get_db() 
     cur.execute("SELECT * FROM USERS WHERE user_id=%s", (user_id,))
     user_info = cur.fetchone()
+
+    cur.execute("SELECT * FROM coach WHERE user_id=%s", (user_id,))
+    coach_info = cur.fetchone()
+
     # Set default values for forms
     form = UserProfileForm(
         nickname = user_info['nickname'],
         email = user_info['email'],
         age = user_info['age'],
-        sex = user_info['sex'])
-
-    cur.execute("SELECT * FROM coach WHERE user_id=%s", (user_id,))
-    coach_info = cur.fetchone()
-
-    if coach_info:
-        form.description.default = coach_info['description']
+        sex = user_info['sex'],
+        description = coach_info['description'] if coach_info else '')
 
     
     if form.validate_on_submit():
+        print(form)
         nickname = form.nickname.data
         email = form.email.data
         age = form.age.data
         sex = form.sex.data
+        if form.sex.data:
+            print('sexsex', form.sex.data)
+        # update picture
+        if form.picture.data:
+            pic = add_profile_pic(form.picture.data, user_id)
+            print('picccccc', pic)
+            sql = """
+                UPDATE users
+                SET avatar = %s
+                WHERE user_id = %s    
+            """  
+            cur.execute(sql, (pic, user_id))   
+            db.commit()      
+            # current_user.profile_image = pic
+
         # update sql
         sql = """
             UPDATE users
@@ -198,8 +216,10 @@ def edit(user_id):
         
         flash("Profile updated")
         return redirect(url_for('userprofile.show', user_id=user_id))
+    
+    profile_image = url_for('static', filename='profile_pics/' + user_info['avatar'])
 
-    return render_template('userprofile/edit.html', form=form, coach_info=coach_info)
+    return render_template('userprofile/edit.html', form=form, coach_info=coach_info, profile_image=profile_image)
 
 
 

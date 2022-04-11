@@ -6,6 +6,13 @@
 
 {% block content %}
 
+<div class="jumbotron">
+  <div align='center'>
+    <h1 >Welcome to the page for {{user_info['username']}}</h1>
+    <img align='center' src="{{ profile_image }}" length="20%">
+  </div>
+</div>
+
 <form method="POST">
   <h2>{% block title %}
     {% if if_current_user %}
@@ -26,6 +33,7 @@
     {% endif %}
 
   </h2>
+
 </form>
 
 <ul class="list-group list-group-flush">
