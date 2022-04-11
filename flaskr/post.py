@@ -32,9 +32,28 @@ def index():
 
     cur.execute("""
                SELECT p.post_id, p.title, p.content, p.user_id, p.open_to, p.datetime, u.username
-               FROM post p JOIN users u
+               FROM post p 
+               JOIN users u
                ON u.user_id = p.user_id
-               ORDER BY p.datetime DESC""")
+               WHERE post_id in (SELECT post_id
+                                    FROM post 
+                                    WHERE open_to = 'everyone'
+                                    UNION
+                                    SELECT post_id
+                                    FROM post 
+                                    WHERE open_to = 'myself'
+                                    AND user_id = %s
+                                    UNION
+                                    SELECT post_id
+                                    FROM post 
+                                    WHERE open_to = 'followers'
+                                    AND %s in (SELECT follower_id FROM 
+                                                (
+                                                SELECT user_id FROM post
+                                                WHERE open_to = 'followers') a
+                                                INNER JOIN follow_record b
+                                                ON a.user_id = b.user_id))
+               ORDER BY p.datetime DESC""", (user_id, user_id))
     posts = cur.fetchall()
 
     cur.execute("""
