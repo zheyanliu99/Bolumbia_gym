@@ -50,7 +50,7 @@ def index():
                 ON u.user_id = a.user_id""")
     admin = cur.fetchall()
 
-    return render_template("QA/QAindex.html", Q_A = Q_A, form = form, Answer = Answer, admin = admin)
+    return render_template("QA/QAindex.html", user_id = user_id, Q_A = Q_A, form = form, Answer = Answer, admin = admin)
 
 
 # create question
@@ -107,24 +107,28 @@ def answer(questiontitle_id):
     user_id = session["user_id"]
     db, cur = get_db()
 
-    cur.execute("SELECT admin_id From admin WHERE user_id = %s", (user_id,))
-    admin_id = cur.fetchone()
+    cur.execute("SELECT * From answer WHERE questiontitle_id = %s", (questiontitle_id,))
+    answer = cur.fetchone()
 
-    if admin_id is None:
-        flash("Only admin can answer the question!")
+    if answer is None:
+        cur.execute("SELECT admin_id From admin WHERE user_id = %s", (user_id,))
+        admin_id = cur.fetchone()['admin_id']
+        if admin_id is None:
+            flash("Only admin can answer the question!")
+        else:
+            if form.validate_on_submit():
+                Answer = form.Answer.data
+                date = datetime.datetime.now()
+                cur.execute(
+                    "INSERT INTO answer (questiontitle_id, answer_content, answer_time, admin_id) VALUES (%s, %s, %s, %s)",
+                    (questiontitle_id, Answer, date, admin_id),
+                )
+                db.commit()
+                return redirect(url_for("QA.index"))
     else:
-        if form.validate_on_submit():
-            Answer = form.Answer.data
-            date = datetime.datetime.now()
+        flash("You can only answer once, you can edit your answer to update it!")
 
-            cur.execute(
-                "INSERT INTO answer (questiontitle_id, answer_content, answer_time, admin_id) VALUES (%s, %s, %s, %s)",
-                (questiontitle_id, Answer, date, admin_id),
-            )
-            db.commit()
-            return redirect(url_for("QA.index"))
-
-    return render_template("QA/QAanswer.html", questiontitle_id = questiontitle_id, form = form, user_id = user_id, admin_id = admin_id)
+    return render_template("QA/QAanswer.html", answer = answer, questiontitle_id = questiontitle_id, form = form, user_id = user_id)
 
 
 #edit the answer
@@ -133,29 +137,26 @@ def edit(questiontitle_id):
     user_id = session["user_id"]
     db, cur = get_db()
 
-    sql = """
-        SELECT *
-        FROM answer
-        WHERE questiontitle_id = %s
-        """
-    cur.execute(sql, (questiontitle_id,))
+    cur.execute("SELECT * From answer WHERE questiontitle_id = %s", (questiontitle_id,))
     Answer = cur.fetchone()
 
     form = Q_AAnswer(Answer = Answer['answer_content'], date = Answer['answer_time'])
 
-    if form.validate_on_submit():
-        Answer = form.Answer.data
-        date = datetime.datetime.now()
-        # update sql
-        sql = """
-            UPDATE answer
-            SET answer_content = %s, answer_time = %s
-            WHERE questiontitle_id = %s
-        """
-        cur.execute(sql, (Answer, date, questiontitle_id))
-        db.commit()
-        flash("updated your answer!")
-        return redirect(url_for('QA.index'))
+    if Answer == None:
+        flash("Please Anwser first then update!")
+    else:
+        if form.validate_on_submit():
+            Answer = form.Answer.data
+            date = datetime.datetime.now()
+            sql = """
+                UPDATE answer
+                SET answer_content = %s, answer_time = %s
+                WHERE questiontitle_id = %s
+            """
+            cur.execute(sql, (Answer, date, questiontitle_id))
+            db.commit()
+            flash("updated your answer!")
+            return redirect(url_for('QA.index'))
 
     return render_template('QA/QAanswer.html', user_id = user_id, questiontitle_id = questiontitle_id, form = form)
 
