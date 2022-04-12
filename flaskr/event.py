@@ -15,9 +15,9 @@ import sys
 import logging 
 logging.basicConfig(level=logging.DEBUG)
 
-from flaskr.db import get_db
+from db import get_db
 
-from .forms.event import SearchEventForm, CreateEventForm, SearchTimeForm
+from forms.event import SearchEventForm, CreateEventForm, SearchTimeForm
 
 bp = Blueprint("event", __name__, url_prefix="/event")
 

@@ -9,9 +9,9 @@ from flask import request
 from flask import session
 from flask import url_for
 
-from flaskr.db import get_db
+from db import get_db
 
-from .forms.routine import RoutineForm
+from forms.routine import RoutineForm
 
 bp = Blueprint("routine", __name__, url_prefix="/routine")
 

@@ -11,9 +11,9 @@ from flask import session
 from flask import url_for
 from flask import abort
 
-from flaskr.db import get_db
+from db import get_db
 
-from .forms.QA import Q_Aform, Q_AAnswer
+from forms.QA import Q_Aform, Q_AAnswer
 
 bp = Blueprint("QA", __name__, url_prefix="/QA")
 

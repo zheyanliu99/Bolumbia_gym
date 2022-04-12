@@ -10,9 +10,7 @@ from flask import session
 from flask import url_for
 import datetime
 
-from flaskr.db import get_db
-
-from .forms.routine import RoutineForm
+from db import get_db
 
 bp = Blueprint("appointment", __name__, url_prefix="/appointment")
 

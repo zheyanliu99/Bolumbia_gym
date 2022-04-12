@@ -11,9 +11,9 @@ from flask import session
 from flask import url_for
 from flask import abort
 
-from flaskr.db import get_db
+from db import get_db
 
-from .forms.post import Postform, Commentform, Likeform
+from forms.post import Postform, Commentform, Likeform
 
 bp = Blueprint("post", __name__, url_prefix="/post")
 

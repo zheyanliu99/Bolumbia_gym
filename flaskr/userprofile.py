@@ -11,9 +11,9 @@ from flask import session
 from flask import url_for
 from flask import abort
 
-from flaskr.db import get_db
-from .forms.userprofile import UserProfileForm, BecomeCoachForm
-from .picture_handler import add_profile_pic
+from db import get_db
+from forms.userprofile import UserProfileForm, BecomeCoachForm
+from picture_handler import add_profile_pic
 
 bp = Blueprint("userprofile", __name__, url_prefix="/userprofile")
 
