@@ -13,7 +13,7 @@ class UserProfileForm(FlaskForm):
     email = StringField('Email', validators=[Email()])
     age = IntegerField('Age', validators=[NumberRange(min=0, max=100)])
     sex = RadioField('Sex', choices=[('male','male'), ('female','female'), ('other','other')])
-    picture = FileField('Update Avatar', validators=[FileAllowed(['jpg', 'png']), DataRequired()])
+    picture = FileField('Update Avatar', validators=[FileAllowed(['jpg', 'png'])])
     description = TextAreaField('Description', validators=[length(max=500)])
     submit = SubmitField('Submit')
 

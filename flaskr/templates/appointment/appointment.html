@@ -2,12 +2,10 @@
 
 
 {% block header %}
-  <h2>{% block title %}Routine Appointment{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
-
-<div class="alert alert-success" role="alert">
+<h2>{% block title %}Routine Appointment{% endblock %}</h2>
 <form method="POST">
 {% if routine_res %}
 <table>
@@ -64,5 +62,4 @@
 
 
 </form>
-</div>
 {% endblock %}
