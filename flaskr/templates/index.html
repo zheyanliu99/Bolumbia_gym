@@ -1,11 +1,96 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}Bolumbia Gym{% endblock %}</h1>
-{% endblock %}
-
 {% block content %}
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime nesciunt dolores optio veniam laboriosam, vitae cumque enim delectus quos eligendi a corrupti natus, sequi, cum quisquam est officiis nam consequatur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem ducimus cumque excepturi ut velit eaque incidunt, debitis quos aspernatur repudiandae assumenda voluptas totam odit quis neque fugit. Hic, voluptatem vero?</p>
-  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio, atque! Natus accusamus omnis aliquid facilis! Ad voluptates dolore beatae magnam at rem earum. Dignissimos laborum consectetur et ex, quod culpa. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo id sequi dicta eum sit totam unde, voluptatibus, quod commodi corporis cupiditate dolorem consectetur sunt corrupti harum dolores obcaecati aut incidunt. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium neque sed maiores culpa dolor officiis unde blanditiis suscipit molestias ex, natus sint non fugit alias expedita, magnam vel nisi porro.</p>
-{% endblock %}
 
+  <div id = "bg" class="container">
+    <div class="jumbotron">
+      <img id="bg" src="../../static/images/bolumbia.png" alt="show" width="800">
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="jumbotron">
+
+        <h1 id="title">{% block title %}Bolumbia Gym{% endblock %}</h1>
+
+      <p id="welcome">Welcome to our application for the gym in Bolumbia University!</p>
+      <p id="introduction"> Many users are concerned about the covid. Therefore, to restrict the number of people in the gym, members of our gym must schedule an appointment with a specific section of the gym. In addition, our application places emphasis on the communication between our coach and user, users can share feed/post and follow other users. Moreover, our gym welcomes sharing and learning, every user can be a coach and every coach can hold an event in our classroom.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="jumbotron">
+  <h1>Main Functions</h1>
+  <p>Coach and admin are also users, they have all the functions that users have and they own some special functions.</p>
+
+  <h4>Users</h4>
+  <ul>
+    <li>Sign up and set up user profile</li>
+    <li>Check out the profile of other users</li>
+    <li>Schedule appointment to attend routine (i.e swimming) or special event (i.e Yoga class)</li>
+    <li>Share feeds and read feeds of others, can comment/like/dislike others’ feed</li>
+    <li>Follow other users, feeds of followed users will appear first</li>
+    <li>Raise questions to the question board and an admin will answer</li>
+  </ul>
+
+  <h4>Coach</h4>
+  <ul>
+    <li>All normal users can sign up to become a coach</li>
+    <li>Create and instruct special event (need available classroom and approval from admin)</li>
+  </ul>
+
+  <h4>Admin</h4>
+  <ul>
+    <li>Create/assign other admin account</li>
+    <li>Manage the status of each routine (open/closed, sanitized/unsanitized)
+</li>
+    <li>Approve/shut down special events created by coach
+</li>
+    <li>Answer questions in the question board</li>
+  </ul>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="jumbotron">
+
+  <h1>Place</h1>
+  <ul>
+    <li>Cardio room</li>
+
+    <ul>
+      <li>the Cardio Room has nine operational treadmills, six elliptical machines, six AMT's, tow open spin cycles and a one individual Concept2 rower.</li>
+    </ul>
+    <li>Strength training room</li>
+
+    <ul>
+      <li>The strength training room includes the following equipment, Glute extension, Pull down/seated row, Abdominal back extension, Rotary torso and Rear delt/pec fly</li>
+    </ul>
+    <li>Swimming pool</li>
+
+    <ul>
+      <li>Swimming pool contains five 50 meters lane. Bathrooms, showers and lockers are available.</li>
+    </ul>
+    <li>Yoga room</li>
+
+    <ul>
+      <li>Classroom for yoga class, can also be used to hold other events.</li>
+    </ul>
+    <li>Karate room</li>
+
+    <ul>
+      <li>Classroom for karate class, can also be used to hold other events.</li>
+    </ul>
+  </ul>
+      </div>
+    </div>
+
+  <div class="container">
+    <div class="jumbotron">
+  <h1>open time</h1>
+  <p> We officily open the gym on 2022/1/1. </p>
+  <p>The daily open time is <span>8:30AM to 9:00PM</span> from Monday to Sunday except hoilday </p>
+    </div>
+  </div>
+
+{% endblock %}
