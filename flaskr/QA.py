@@ -29,20 +29,27 @@ def index():
     user_id = session["user_id"]
     db, cur = get_db()
     cur.execute("""
-               SELECT *
-               FROM raise_question r JOIN users u
+               SELECT r.*, u.username raisername, u2.username answerername, a.admin_id, a.answer_content
+               FROM raise_question r 
+               INNER JOIN users u
                ON u.user_id = r.user_id
+               LEFT JOIN answer a
+               ON r.questiontitle_id = a.questiontitle_id
+               LEFT JOIN users u2
+               ON a.admin_id = u2.user_id
                ORDER BY r.raisedate DESC""")
     Q_A = cur.fetchall()
-
-    cur.execute("""
-                SELECT a.admin_id, a.questiontitle_id, a.answer_content, a.answer_time, d.user_id, u.username
-                FROM answer a JOIN admin d
-                ON a.admin_id = d.admin_id
-                LEFT JOIN users u
-                ON u.user_id = d.user_id
-                ORDER BY a.answer_time DESC""")
-    Answer = cur.fetchall()
+    print(11111111111111111)
+    print(heading_from_dict(Q_A))
+    print(Q_A)
+    # cur.execute("""
+    #             SELECT a.admin_id, a.questiontitle_id, a.answer_content, a.answer_time, d.user_id, u.username
+    #             FROM answer a JOIN admin d
+    #             ON a.admin_id = d.admin_id
+    #             LEFT JOIN users u
+    #             ON u.user_id = d.user_id
+    #             ORDER BY a.answer_time DESC""")
+    # Answer = cur.fetchall()
 
     cur.execute("""
                 SELECT a.user_id, a.admin_id
@@ -50,7 +57,7 @@ def index():
                 ON u.user_id = a.user_id""")
     admin = cur.fetchall()
 
-    return render_template("QA/QAindex.html", user_id = user_id, Q_A = Q_A, form = form, Answer = Answer, admin = admin)
+    return render_template("QA/QAindex.html", user_id = user_id, Q_A = Q_A, form = form, admin = admin)
 
 
 # create question

@@ -39,17 +39,6 @@
         </div>
 
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          User
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{{ url_for('userprofile.show', user_id=session['user_id']) }}">My Profile</a>
-
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="{{ url_for('userprofile.becomecoach', user_id=session['user_id']) }}">Become a coach</a>
-        </div>
-        <li class="nav-item">
 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -71,11 +60,11 @@
             <a class="dropdown-item" href="{{ url_for('QA.createquestion', user_id=session['user_id']) }}">Raise question</a>
           </div>
           <li class="nav-item">
-
-        <form class="form-inline my-2 my-lg-0">
+        <!-- maybe do this later -->
+        <!-- <form class="form-inline my-2 my-lg-0">
           <input class="form-control mr-sm-2" type="search" placeholder="Search Username" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+        </form> -->
       </li>
       {% else %}
       <li class="nav-item">
@@ -90,6 +79,17 @@
     {% if g.user %}
     <div class="topnav-right">
       <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            User
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('userprofile.show', user_id=session['user_id']) }}">My Profile</a>
+  
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url_for('userprofile.becomecoach', user_id=session['user_id']) }}">Become a coach</a>
+          </div>
+          <li class="nav-item">
       <li><span><i>{{ g.user['username'] }}</i></span></li>
     <li class="nav-item">
       <a class="nav-link" href="{{ url_for('auth.logout') }}">Log  Out</a>
