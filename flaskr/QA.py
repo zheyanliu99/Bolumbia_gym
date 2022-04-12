@@ -39,9 +39,9 @@ def index():
                ON a.admin_id = u2.user_id
                ORDER BY r.raisedate DESC""")
     Q_A = cur.fetchall()
-    print(11111111111111111)
-    print(heading_from_dict(Q_A))
-    print(Q_A)
+    # print(11111111111111111)
+    # print(heading_from_dict(Q_A))
+    # print(Q_A)
     # cur.execute("""
     #             SELECT a.admin_id, a.questiontitle_id, a.answer_content, a.answer_time, d.user_id, u.username
     #             FROM answer a JOIN admin d
