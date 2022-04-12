@@ -6,20 +6,30 @@ Team member: Zheyan Liu, Zhuolun Huang
 
 # Install
 
-## Mac
-
+clone repo and change directory
 ```
-$ export FLASK_APP=flaskr
-$ export FLASK_ENV=development
-$ flask run
+git clone 'https://github.com/zheyanliu99/Bolumbia_gym.git'
+cd Bolumbia_gym
 ```
 
-## Windows cmd
-
+install required packages
 ```
-> set FLASK_APP=flaskr
-> set FLASK_ENV=development
-> flask run
+pip install -r requirements.txt
 ```
 
-try add something to test the git push
+# Run
+
+change directory to run server.py
+
+```
+cd flaskr
+```
+
+debug mode
+```
+python server.py --debug
+```
+Normal mode
+```
+python server.py --debug
+```
