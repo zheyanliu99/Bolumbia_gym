@@ -1,10 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'adminbase.html' %}
 
 {% block header %}
   <h1>{% block title %}Q&A{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('QA.createquestion') }}">New</a>
-  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -16,7 +13,7 @@
           <div class="about">by <a href={{ url_for('userprofile.show', user_id=Q['user_id']) }}>{{ Q['raisername'] }}</a>, {{ Q['raisedate'].strftime("%m/%d/%Y, %H:%M:%S")}}</div>
         </div>
         {% if g.user['user_id'] == Q['user_id'] %}
-        <form action="{{ url_for('QA.delete', questiontitle_id = Q['questiontitle_id']) }}" method="post">
+        <form action="{{ url_for('admin.delete', questiontitle_id = Q['questiontitle_id']) }}" method="post">
           <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
         </form>
         {% endif %}
@@ -36,9 +33,9 @@
       {% for a in admin %}
         {% if g.user['user_id'] == a['user_id']%}
           {% if Q['admin_id'] %}
-          <a class="action" href="{{ url_for('QA.edit', questiontitle_id=Q['questiontitle_id']) }}">Edit the Answer</a>
+          <a class="action" href="{{ url_for('admin.edit', questiontitle_id=Q['questiontitle_id']) }}">Edit the Answer</a>
           {% else %}
-        <form action="{{ url_for('QA.answer', questiontitle_id = Q['questiontitle_id']) }}" method="post">
+        <form action="{{ url_for('admin.answer', questiontitle_id = Q['questiontitle_id']) }}" method="post">
           <input type="submit" value="Answer">
           {% endif %}
         </form>
