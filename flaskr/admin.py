@@ -160,14 +160,16 @@ def indexQA():
     user_id = session["user_id"]
     db, cur = get_db()
     cur.execute("""
-               SELECT r.*, u.username raisername, u2.username answerername, a.admin_id, a.answer_content
+               SELECT r.*, u.username raisername, u3.username answerername, a.admin_id, a.answer_content
                FROM raise_question r
                INNER JOIN users u
                ON u.user_id = r.user_id
                LEFT JOIN answer a
                ON r.questiontitle_id = a.questiontitle_id
-               LEFT JOIN users u2
-               ON a.admin_id = u2.user_id
+               LEFT JOIN admin u2
+               ON a.admin_id = u2.admin_id
+               LEFT JOIN users u3
+               on u3.user_id = u2.user_id
                ORDER BY r.raisedate DESC""")
     Q_A = cur.fetchall()
 
