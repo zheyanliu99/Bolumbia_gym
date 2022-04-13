@@ -38,7 +38,16 @@
             <li>Below every post, user can make comments down below</li>
           </ul>
           </p>
+          {% if g.user %}
           <a href="{{ url_for('post.index') }}" class="btn btn-primary">Post</a>
+          {% else %}
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
+          </li>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -60,7 +69,16 @@
             <li>This section contains the section, date, timeslot, participaters anc capacity for every routine appointment</li>
           </ul>
           </p>
+          {% if g.user %}
           <a href="{{ url_for('appointment.manage') }}" class="btn btn-primary">Appointment</a>
+          {% else %}
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
+          </li>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -83,7 +101,16 @@
             <li>The workout type contains cardio swimming and strength</li>
           </ul>
           </p>
-          <a href="{{ url_for('routine.book') }}" class="btn btn-primary">Appointment</a>
+          {% if g.user %}
+          <a href="{{ url_for('routine.book') }}" class="btn btn-primary">routine</a>
+          {% else %}
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
+          </li>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -107,7 +134,16 @@
             <li>Check out every class duration</li>
           </ul>
           </p>
+          {% if g.user %}
           <a href="{{ url_for('event.create') }}" class="btn btn-primary">event</a>
+          {% else %}
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
+          </li>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -130,7 +166,16 @@
             <li>Check out all the questions that may help you and answer your concerns</li>
           </ul>
           </p>
+          {% if g.user %}
           <a href="{{ url_for('QA.index') }}" class="btn btn-primary">Q & A</a>
+          {% else %}
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
+          </li>
+          {% endif %}
         </div>
       </div>
     </div>
