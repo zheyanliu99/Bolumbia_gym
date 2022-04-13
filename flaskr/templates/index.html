@@ -2,19 +2,20 @@
 
 {% block content %}
 
+
   <div id = "bg" class="container">
-    <div class="jumbotron">
-      <img id="bg" src="../../static/images/bolumbia.png" alt="show" width="800">
-    </div>
+      <h1 id="title">{% block title %}Bolumbia Gym{% endblock %}</h1>
+      <img id="bg" src="../../static/images/mainpage2.png" alt="show" width="700">
+      <br>
+      <br>
+      <br>
   </div>
 
   <div class="container">
     <div class="jumbotron">
 
-        <h1 id="title">{% block title %}Bolumbia Gym{% endblock %}</h1>
-
       <p id="welcome">Welcome to our application for the gym in Bolumbia University!</p>
-      <p id="introduction"> Many users are concerned about the covid. Therefore, to restrict the number of people in the gym, members of our gym must schedule an appointment with a specific section of the gym. In addition, our application places emphasis on the communication between our coach and user, users can share feed/post and follow other users. Moreover, our gym welcomes sharing and learning, every user can be a coach and every coach can hold an event in our classroom.</p>
+      <p id="introduction"> Many yous are concerned about the covid. Therefore, to restrict the number of people in the gym, members of our gym must schedule an appointment with a specific section of the gym. In addition, our application places emphasis on the communication between our coach and you, yous can share feed/post and follow other yous. Moreover, our gym welcomes sharing and learning, every you can be a coach and every coach can hold an event in our classroom.</p>
     </div>
   </div>
 
@@ -25,29 +26,23 @@
   <div class="card mb-3" style="max-width: 1000px;">
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="../../static/images/post.jpg" class="card-img-middle" alt="show" width="300">
+        <img src="../../static/images/blogging_image.jpeg" class="card-img-middle" alt="show" width="300">
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">Post</h5>
+          {% if g.you %}
+          <h2><a href="{{ url_for('auth.register') }}">Post</a></h2>
+          {% else %}
+            <h2><a href="{{ url_for('auth.login') }}">Post</a></h2>
+          {% endif %}
           <p class="card-text">
           <ul>
-            <li>User can make posts in create post site</li>
-            <li>Check out all post from other users and edit your own post in Mypost</li>
+            <li>You can make posts in create post site</li>
+            <li>Check out all post from other yous and edit your own post in Mypost</li>
             <li>Share feeds and read feeds of others, can comment/like/dislike others’ feed</li>
-            <li>Below every post, user can make comments down below</li>
+            <li>Below every post, you can make comments down below</li>
           </ul>
           </p>
-          {% if g.user %}
-          <a href="{{ url_for('post.index') }}" class="btn btn-primary">Post</a>
-          {% else %}
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
-          </li>
-          {% endif %}
         </div>
       </div>
     </div>
@@ -57,28 +52,23 @@
   <div class="card mb-3" style="max-width: 1000px;">
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="../../static/images/appointment.jpg" class="card-img-middle" alt="show" width="300">
+        <img src="../../static/images/Appointment.png" class="card-img-middle" alt="show" width="300">
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">Appointment</h5>
+          {% if g.you %}
+          <h2><a href="{{ url_for('appointment.manage') }}">Appointment</a></h2>
+          {% else %}
+            <h2><a href="{{ url_for('auth.login') }}">Appointment</a></h2>
+          {% endif %}
+
           <p class="card-text">
           <ul>
-            <li>User can make appointment to attend routine (i.e swimming) or special event (i.e Yoga class)</li>
-            <li>User can cancel the routine apportment and event appointment in apportment site</li>
-            <li>This section contains the section, date, timeslot, participaters anc capacity for every routine appointment</li>
+            <li>You can make appointment to attend routine (i.e swimming) or special event (i.e Yoga class)</li>
+            <li>You can cancel the routine apportment and event appointment in apportment site</li>
+            <li>This section contains the section, date, timeslot, participaters and capacity for every routine appointment</li>
           </ul>
           </p>
-          {% if g.user %}
-          <a href="{{ url_for('appointment.manage') }}" class="btn btn-primary">Appointment</a>
-          {% else %}
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
-          </li>
-          {% endif %}
         </div>
       </div>
     </div>
@@ -89,28 +79,23 @@
   <div class="card mb-3" style="max-width: 1000px;">
     <div class="row g-0">
       <div class="col-md-4" style='text-align:center;'>
-        <img src="../../static/images/routine.jpg" class="card-img-middle" alt="show" width="300">
+        <img src="../../static/images/Clock-1.png" class="card-img-middle" alt="show" width="300">
       </div>
     <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">Routine</h5>
+          {% if g.you %}
+          <h2><a href="{{ url_for('routine.book') }}">Routine</a></h2>
+          {% else %}
+            <h2><a href="{{ url_for('auth.login') }}">Routine</a></h2>
+          {% endif %}
+
           <p class="card-text">
           <ul>
-            <li>User can make appointment to attend routine (i.e swimming) or special event (i.e Yoga class)</li>
-            <li>User can cancel the routine apportment and event appointment in apportment site</li>
-            <li>The workout type contains cardio swimming and strength</li>
+            <li>You can make appointment to attend routine (i.e swimming) or special event (i.e Yoga class)</li>
+            <li>You can cancel the routine apportment and event appointment in apportment site</li>
+            <li>The workout type contains cardio, swimming and strength</li>
           </ul>
           </p>
-          {% if g.user %}
-          <a href="{{ url_for('routine.book') }}" class="btn btn-primary">routine</a>
-          {% else %}
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
-          </li>
-          {% endif %}
         </div>
       </div>
     </div>
@@ -121,29 +106,24 @@
   <div class="card mb-3" style="max-width: 1000px;">
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="../../static/images/event.jpg" class="card-img-middle" alt="show" width="300">
+        <img src="../../static/images/event.jpeg" class="card-img-middle" alt="show" width="300">
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">Event</h5>
+          {% if g.you %}
+          <h2><a href="{{ url_for('event.create') }}">Event</a></h2>
+          {% else %}
+            <h2><a href="{{ url_for('auth.login') }}">Event</a></h2>
+          {% endif %}
+
           <p class="card-text">
           <ul>
-            <li>User can create event within 5 places: yoga room, karate room, cardio room, strength training room and swimming pool</li>
-            <li>User can also book available event that has been already created in book event site</li>
-            <li>Search for the event date and the earliest start tiem and latest end time to see available event.</li>
+            <li>You can create event within 5 places: yoga room, karate room, cardio room, strength training room and swimming pool</li>
+            <li>You can also book available event that has been already created in book event site</li>
+            <li>Search for the event date and the earliest start time and latest end time to see available event.</li>
             <li>Check out every class duration</li>
           </ul>
           </p>
-          {% if g.user %}
-          <a href="{{ url_for('event.create') }}" class="btn btn-primary">event</a>
-          {% else %}
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
-          </li>
-          {% endif %}
         </div>
       </div>
     </div>
@@ -154,28 +134,22 @@
   <div class="card mb-3" style="max-width: 1000px;">
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="../../static/images/Q_A.jpg" class="card-img-middle" alt="show" width="300">
+        <img src="../../static/images/Q&A.png" class="card-img-middle" alt="show" width="300">
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">Q & A</h5>
+          {% if g.you %}
+          <h2><a href="{{ url_for('QA.index') }}">Q&A</a></h2>
+          {% else %}
+            <h2><a href="{{ url_for('auth.login') }}">Q&A</a></h2>
+          {% endif %}
           <p class="card-text">
           <ul>
-            <li>User can raise questions in Q & A raise question site</li>
+            <li>You can raise questions in Q & A raise question site</li>
             <li>Admin will answer your questions </li>
             <li>Check out all the questions that may help you and answer your concerns</li>
           </ul>
           </p>
-          {% if g.user %}
-          <a href="{{ url_for('QA.index') }}" class="btn btn-primary">Q & A</a>
-          {% else %}
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Log In</a>
-          </li>
-          {% endif %}
         </div>
       </div>
     </div>
