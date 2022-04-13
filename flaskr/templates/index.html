@@ -26,37 +26,11 @@
   <div class="card mb-3" style="max-width: 1000px;">
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="../../static/images/blogging_image.jpeg" class="card-img-middle" alt="show" width="300">
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          {% if g.you %}
-          <h2><a href="{{ url_for('auth.register') }}">Post</a></h2>
-          {% else %}
-            <h2><a href="{{ url_for('auth.login') }}">Post</a></h2>
-          {% endif %}
-          <p class="card-text">
-          <ul>
-            <li>You can make posts in create post site</li>
-            <li>Check out all post from other yous and edit your own post in Mypost</li>
-            <li>Share feeds and read feeds of others, can comment/like/dislike others’ feed</li>
-            <li>Below every post, you can make comments down below</li>
-          </ul>
-          </p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="card mb-3" style="max-width: 1000px;">
-    <div class="row g-0">
-      <div class="col-md-4">
         <img src="../../static/images/Appointment.png" class="card-img-middle" alt="show" width="300">
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          {% if g.you %}
+          {% if g.user %}
           <h2><a href="{{ url_for('appointment.manage') }}">Appointment</a></h2>
           {% else %}
             <h2><a href="{{ url_for('auth.login') }}">Appointment</a></h2>
@@ -83,7 +57,7 @@
       </div>
     <div class="col-md-8">
         <div class="card-body">
-          {% if g.you %}
+          {% if g.user %}
           <h2><a href="{{ url_for('routine.book') }}">Routine</a></h2>
           {% else %}
             <h2><a href="{{ url_for('auth.login') }}">Routine</a></h2>
@@ -110,7 +84,7 @@
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          {% if g.you %}
+          {% if g.user %}
           <h2><a href="{{ url_for('event.create') }}">Event</a></h2>
           {% else %}
             <h2><a href="{{ url_for('auth.login') }}">Event</a></h2>
@@ -129,7 +103,30 @@
     </div>
   </div>
 
-
+  <div class="card mb-3" style="max-width: 1000px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="../../static/images/blogging_image.jpeg" class="card-img-middle" alt="show" width="300">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          {% if g.user %}
+          <h2><a href="{{ url_for('post.index') }}">Post</a></h2>
+          {% else %}
+            <h2><a href="{{ url_for('auth.login') }}">Post</a></h2>
+          {% endif %}
+          <p class="card-text">
+          <ul>
+            <li>You can make posts in create post site</li>
+            <li>Check out all post from other yous and edit your own post in Mypost</li>
+            <li>Share feeds and read feeds of others, can comment/like/dislike others’ feed</li>
+            <li>Below every post, you can make comments down below</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="card mb-3" style="max-width: 1000px;">
     <div class="row g-0">
@@ -138,7 +135,7 @@
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          {% if g.you %}
+          {% if g.user %}
           <h2><a href="{{ url_for('QA.index') }}">Q&A</a></h2>
           {% else %}
             <h2><a href="{{ url_for('auth.login') }}">Q&A</a></h2>
@@ -154,8 +151,37 @@
       </div>
     </div>
   </div>
+
+  <div class="card mb-3" style="max-width: 1000px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="../../static/images/users.png" class="card-img-middle" alt="show" width="300">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          {% if g.user %}
+          <h2><a href="{{ url_for('userprofile.show', user_id=session['user_id']) }}">Users</a></h2>
+          {% else %}
+            <h2><a href="{{ url_for('auth.login') }}">Users</a></h2>
+          {% endif %}
+          <p class="card-text">
+          <ul>
+            <li>You can Sign up and set up your own profile </li>
+            <li>Check out the profile of other users</li>
+            <li>Follow other users, to see the post for only the followers</li>
+          </ul>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
   </div>
   </div>
+
+
 
   <div class="container">
     <div class="jumbotron">
