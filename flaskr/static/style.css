@@ -10,12 +10,19 @@ body {
   background: white;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h6 {
   font-family: serif;
   color: #377ba8;
   margin: 1rem 0;
+  font-weight: bold;
 }
 
+h5 {
+  color: Black;
+  margin: 1rem 0;
+  font-size: 38px;
+  font-weight: bold;
+}
 
 a {
   color: #377ba8;
@@ -135,7 +142,6 @@ input[type=submit] {
 }
 
 #welcome{
-  color:;
   font-size: 26px;
   font-family: Consolas;
   font-style: italic;
@@ -156,6 +162,16 @@ span{
   font-weight: bold;
 }
 
+img{
+  text-align: center;
+}
+
 #bg{
   text-align: center;
+}
+
+#caption{
+  font-weight: bold;
+  color:Black;
+  
 }
