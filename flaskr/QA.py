@@ -54,7 +54,7 @@ def index():
     # Answer = cur.fetchall()
 
     cur.execute("""
-                SELECT a.user_id, a.admin_id
+                SELECT a.user_id, u.username, a.admin_id
                 From admin a LEFT JOIN users u
                 ON u.user_id = a.user_id""")
     admin = cur.fetchall()
@@ -146,26 +146,30 @@ def edit(questiontitle_id):
     user_id = session["user_id"]
     db, cur = get_db()
 
-    cur.execute("SELECT * From answer WHERE questiontitle_id = %s", (questiontitle_id,))
+    cur.execute("""
+                SELECT a.admin_id
+                From admin a
+                WHERE user_id = %s""", (user_id,))
+    admin_id = cur.fetchone()
+
+    cur.execute("SELECT a.answer_content, a.answer_time, a.admin_id, d.user_id From answer a JOIN admin d On a.admin_id = d.admin_id WHERE questiontitle_id = %s", (questiontitle_id,))
     Answer = cur.fetchone()
 
     form = Q_AAnswer(Answer = Answer['answer_content'], date = Answer['answer_time'])
 
-    if Answer == None:
-        flash("Please Anwser first then update!")
-    else:
-        if form.validate_on_submit():
-            Answer = form.Answer.data
-            date = datetime.datetime.now()
-            sql = """
-                UPDATE answer
-                SET answer_content = %s, answer_time = %s
-                WHERE questiontitle_id = %s
-            """
-            cur.execute(sql, (Answer, date, questiontitle_id))
-            db.commit()
-            flash("updated your answer!")
-            return redirect(url_for('QA.index'))
+    if form.validate_on_submit():
+        Answer = form.Answer.data
+        date = datetime.datetime.now()
+        admin_id = admin_id['admin_id']
+        sql = """
+            UPDATE answer
+            SET answer_content = %s, answer_time = %s, admin_id = %s
+            WHERE questiontitle_id = %s
+        """
+        cur.execute(sql, (Answer, date, admin_id, questiontitle_id))
+        db.commit()
+        flash("updated your answer!")
+        return redirect(url_for('QA.index'))
 
     return render_template('QA/QAanswer.html', user_id = user_id, questiontitle_id = questiontitle_id, form = form)
 

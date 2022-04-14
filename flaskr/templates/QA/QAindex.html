@@ -36,7 +36,7 @@
       {% for a in admin %}
         {% if g.user['user_id'] == a['user_id']%}
           {% if Q['admin_id'] %}
-          <a class="action" href="{{ url_for('QA.edit', questiontitle_id=Q['questiontitle_id']) }}">Edit the Answer</a>
+          <a class="action" href="{{ url_for('QA.edit', admin_id = Q['admin_id'], questiontitle_id=Q['questiontitle_id']) }}">Edit the Answer</a>
           {% else %}
         <form action="{{ url_for('QA.answer', questiontitle_id = Q['questiontitle_id']) }}" method="post">
           <input type="submit" value="Answer">
