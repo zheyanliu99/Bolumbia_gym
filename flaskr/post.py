@@ -61,7 +61,7 @@ def index():
                 FROM comment c JOIN post p
                 ON c.post_id = p.post_id
                 INNER JOIN users u
-                ON p.user_id = u.user_id""")
+                ON c.user_id = u.user_id""")
     comments = cur.fetchall()
 
     cur.execute("""
