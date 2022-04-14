@@ -31,5 +31,5 @@ python server.py --debug
 ```
 Normal mode
 ```
-python server.py --debug
+python server.py
 ```
