@@ -271,3 +271,72 @@ def dislike(post_id):
     db.commit()
     
     return redirect(url_for('post.index'))
+
+
+
+@bp.route("/<int:user_id>")
+def user_post(user_id):
+    # user_id = session['user_id']
+    """Show all the posts, most recent first."""
+
+    db, cur = get_db()
+
+    cur.execute("""
+               SELECT p.post_id, p.title, p.content, p.user_id, p.open_to, p.datetime, u.username, u.avatar
+               FROM post p 
+               JOIN users u
+               ON u.user_id = p.user_id
+               WHERE post_id in (SELECT post_id
+                                    FROM post 
+                                    WHERE open_to = 'everyone'
+                                    UNION
+                                    SELECT post_id
+                                    FROM post 
+                                    WHERE open_to = 'myself'
+                                    AND user_id = %s
+                                    UNION
+                                    SELECT post_id
+                                    FROM post 
+                                    WHERE open_to = 'followers'
+                                    AND %s in (SELECT follower_id FROM 
+                                                (
+                                                SELECT user_id FROM post
+                                                WHERE open_to = 'followers') a
+                                                INNER JOIN follow_record b
+                                                ON a.user_id = b.user_id))
+               AND p.user_id = %s
+               ORDER BY p.datetime DESC""", (user_id, user_id, user_id))
+    posts = cur.fetchall()
+
+    cur.execute("""
+                SELECT c.content, c.post_id, c.user_id, c.if_anonymous, u.username
+                FROM comment c JOIN post p
+                ON c.post_id = p.post_id
+                INNER JOIN users u
+                ON c.user_id = u.user_id""")
+    comments = cur.fetchall()
+
+    cur.execute("""
+                SELECT L.if_like, L.post_id, L.user_id
+                FROM liked L JOIN post p
+                ON L.post_id = p.post_id""")
+    liked = cur.fetchall()
+
+    # like and dislike count
+    cur.execute("""
+            SELECT p.post_id, SUM(CASE WHEN if_like = True THEN 1 ELSE 0 END) like_sum, SUM(CASE WHEN if_like = False THEN 1 ELSE 0 END) dislike_sum
+            FROM post p
+            LEFT JOIN liked l
+            ON p.post_id = l.post_id
+            GROUP BY p.post_id""")
+    like_dislike_sum = cur.fetchall()
+    like_dislike_dict = {}
+    for alike_dislike_sum in like_dislike_sum:
+        like_dislike_dict[alike_dislike_sum['post_id']] = {'like_sum':alike_dislike_sum['like_sum'], 'dislike_sum':alike_dislike_sum['dislike_sum']}
+
+    # if a user has liked or disliked
+    cur.execute("""
+            SELECT post_id FROM liked WHERE user_id = %s""", (user_id, ))
+    responsed_post = cur.fetchall()
+
+    return render_template("post/postindex.html", user_id=user_id, posts=posts, comments = comments, like_dislike_dict = like_dislike_dict, liked = liked, responsed_post=responsed_post)

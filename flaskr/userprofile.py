@@ -75,6 +75,40 @@ def show(user_id):
         cur.execute(sql, (coaching_info['coach_id'], datetime.date.today()))
         coaching_info_more = cur.fetchone()
 
+    # Post info
+    sql = """
+        SELECT COUNT(*)
+        FROM post
+        WHERE user_id = %s   
+    """
+                    
+    cur.execute(sql, (user_id, ))
+    post_total_cnt = cur.fetchone()[0]
+
+    sql = """
+    SELECT count(*)
+    FROM liked
+    WHERE post_id in (SELECT post_id
+                      FROM post
+                      WHERE user_id = %s)
+    AND if_like is True
+    """
+
+    cur.execute(sql, (user_id, ))
+    likes = cur.fetchone()[0]
+
+    sql = """
+    SELECT count(*)
+    FROM comment
+    WHERE post_id in (SELECT post_id
+                      FROM post
+                      WHERE user_id = %s)
+    """
+
+    cur.execute(sql, (user_id, ))
+    comments = cur.fetchone()[0]
+
+
 
     # Follow/Unfollow button
 
@@ -102,8 +136,10 @@ def show(user_id):
         return redirect(url_for('userprofile.show', user_id=user_id))
     
     profile_image = url_for('static', filename='profile_pics/' + user_info['avatar'])
+
     return render_template('userprofile/userprofile.html', user_id=user_id, current_user_id=current_user_id, if_current_user=if_current_user, if_follow=if_follow,
-        user_info=user_info, followers=followers, following=following, coaching_info=coaching_info, coaching_info_more=coaching_info_more, profile_image=profile_image)
+        user_info=user_info, followers=followers, following=following, coaching_info=coaching_info, coaching_info_more=coaching_info_more, profile_image=profile_image, 
+        post_total_cnt=post_total_cnt, likes=likes, comments=comments)
 
 
 @bp.route('/<int:user_id>/follower', methods=['GET', 'POST'])
@@ -242,3 +278,4 @@ def becomecoach(user_id):
         db.commit()
         return redirect(url_for('userprofile.show', user_id=user_id))
     return render_template('userprofile/becomecoach.html', form=form, if_coach=if_coach)
+
