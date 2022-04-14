@@ -13,7 +13,7 @@
           <div class="about">by <a href={{ url_for('userprofile.show', user_id=Q['user_id']) }}>{{ Q['raisername'] }}</a>, {{ Q['raisedate'].strftime("%m/%d/%Y, %H:%M:%S")}}</div>
         </div>
         {% if g.user['user_id'] == Q['user_id'] %}
-        <form action="{{ url_for('admin.delete', questiontitle_id = Q['questiontitle_id']) }}" method="post">
+        <form action="{{ url_for('admin.deleteanswer', questiontitle_id = Q['questiontitle_id']) }}" method="post">
           <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
         </form>
         {% endif %}
