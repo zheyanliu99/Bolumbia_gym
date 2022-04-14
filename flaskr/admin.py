@@ -37,8 +37,25 @@ def index():
     res = cur.fetchone()
     if not res:
         abort(404)
-    print('****************', session['admin_id'])
-    return render_template("admin/index.html")
+    # print('****************', session['admin_id'])
+    cur.execute("""
+        SELECT count(*) 
+        FROM event
+        WHERE event_id not in (SELECT event_id FROM event_approve)
+        AND starttime > %s
+        """, (datetime.datetime.now(), ))
+    unapproved_count = cur.fetchone()[0]
+
+    cur.execute("""
+        SELECT count(*) 
+        FROM raise_question
+        WHERE questiontitle_id not in (SELECT questiontitle_id FROM answer)
+        """)
+    unanswered_count = cur.fetchone()[0]
+
+    all_clear = unanswered_count==0 and unapproved_count==0
+    
+    return render_template("admin/index.html", unapproved_count=unapproved_count, unanswered_count=unanswered_count, all_clear=all_clear)
 
 
 @bp.route('/event/approve', methods=['GET', 'POST'])
@@ -67,7 +84,8 @@ def eventapprove():
         SELECT *
         FROM event
         WHERE event_id not in (SELECT event_id FROM event_approve)
-        AND event_id not in (SELECT event_id FROM conflict_events)) a
+        AND event_id not in (SELECT event_id FROM conflict_events)
+        AND starttime > %s) a
         INNER JOIN place p
         ON a.place_id = p.place_id
         INNER JOIN coach c

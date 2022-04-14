@@ -56,7 +56,7 @@ def book():
                 AND date >= %s
                 AND date <= %s)
 
-                SELECT a.event_id, b.description, b.starttime, b.endtime, d.nickname coach_name, a.num_of_users participaters, b.classlimit, b.ageconstraint_lower, b.ageconstraint_upper 
+                SELECT a.event_id, b.description, b.starttime, b.endtime, d.nickname coach_name, a.num_of_users participants, b.classlimit, CONCAT(b.ageconstraint_lower, '~',b.ageconstraint_upper) recommend_age
                 FROM
                 (
                 SELECT t1.event_id, count(distinct user_id)  as num_of_users
@@ -94,7 +94,8 @@ def book():
                         # commit to fail. Show a validation error.
                         print(e)
                         flash("Book failure, you have booked this event appointment before")
-                        return redirect(url_for('event.book'))
+                        # return redirect(url_for('event.book'))
+                    
                 
     return render_template('event/book.html', form=form, headings=headings, res=res)
 

@@ -6,5 +6,19 @@
 
 {% block content %}
   <b><p>Dear admin {{g.user['username']}}</p></b>
- {% endblock %}
 
+  {% if not all_clear %}
+
+  <ul>
+
+    <li>You have {{unapproved_count}} <a href="{{ url_for('admin.eventapprove') }}">unapproved  events</a></li>
+    <li>You have {{unanswered_count}} <a href="{{ url_for('admin.indexQA') }}">unanswered questions</a></li>
+
+  </ul>
+
+  {% else %}
+
+  All clear, enjoy your day
+
+  {% endif %}
+ {% endblock %}
